@@ -22,7 +22,6 @@ public class GatewayApplication {
         return builder.routes()
                 .route(p -> p
                         .path("/api/**")
-                        .filters(f -> f.addRequestHeader("Hello", "World"))
                         .uri("http://localhost:8081"))
                 .build();
     }
