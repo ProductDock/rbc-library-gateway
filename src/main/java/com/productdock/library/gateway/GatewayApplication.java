@@ -1,13 +1,13 @@
-package com.productdock.rbclibrarygateway;
+package com.productdock.library.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RbcLibraryGatewayApplication {
+public class GatewayApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RbcLibraryGatewayApplication.class, args);
+		SpringApplication.run(GatewayApplication.class, args);
 	}
 
 }
