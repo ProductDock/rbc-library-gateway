@@ -13,12 +13,12 @@ public class GatewayApplication {
 		SpringApplication.run(GatewayApplication.class, args);
 	}
 
-    @Bean
-    public RouteLocator myRoutes(RouteLocatorBuilder builder) {
-        return builder.routes()
-                .route(p -> p
-                        .path("/api/**")
-                        .uri("http://localhost:8081"))
-                .build();
-    }
+//    @Bean
+//    public RouteLocator myRoutes(RouteLocatorBuilder builder) {
+//        return builder.routes()
+//                .route(p -> p
+//                        .path("/api/**")
+//                        .uri("http://localhost:8081"))
+//                .build();
+//    }
 }
