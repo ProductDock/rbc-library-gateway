@@ -1,4 +1,4 @@
-package com.productdock.library.gateway.api;
+package com.productdock.library.gateway.config;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureWireMock(port = 8081)
-public class GatewayApplicationTest {
+public class SecurityConfigTest {
 
     @Autowired
     private WebTestClient webClient;
