@@ -1,5 +1,6 @@
 package com.productdock.library.gateway.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -13,6 +14,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @EnableWebFluxSecurity
 public class SecurityConfig {
+
+    @Value("${cors.allowed.origins}")
+    private String corsAllowedOrigins;
+
     @Bean
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) throws Exception {
         http.csrf().disable()
@@ -29,7 +34,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
-        configuration.setAllowedOrigins(asList("http://localhost:3000","http://library.productdock.rs"));
+        configuration.addAllowedOrigin(corsAllowedOrigins);
         configuration.setAllowedMethods(asList("GET", "POST", "OPTIONS", "PUT", "PATCH", "HEAD"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
