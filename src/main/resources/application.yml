@@ -11,11 +11,11 @@ spring:
         - name: Retry
           args:
             retries: 3
-            statuses: BAD_GATEWAY
-            methods: GET,POST
+            series: SERVER_ERROR
+            methods: GET
             backoff:
-              firstBackoff: 10ms
-              maxBackoff: 50ms
+              firstBackoff: 50ms
+              maxBackoff: 500ms
               factor: 2
               basedOnPreviousValue: false
       routes:
