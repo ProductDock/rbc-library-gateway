@@ -20,6 +20,6 @@ spring:
               basedOnPreviousValue: false
       routes:
         - id: catalog-route
-          uri: ${CATALOG_SERVICE:http://localhost:8081}
+          uri: ${CATALOG_SERVICE_URL:http://localhost:8081}
           predicates:
-            - Path=/api/books**
+            - Path=/api/catalog/books**
