@@ -23,3 +23,11 @@ spring:
           uri: ${CATALOG_SERVICE_URL:http://localhost:8081}
           predicates:
             - Path=/api/catalog/books**
+        - id: search-route
+          uri: ${SEARCH_SERVICE_URL:http://localhost:8082}
+          predicates:
+            - Path=/api/search**
+        - id: rental-route
+          uri: ${RENTAL_SERVICE_URL:http://localhost:8083}
+          predicates:
+            - Path=/api/rental**
