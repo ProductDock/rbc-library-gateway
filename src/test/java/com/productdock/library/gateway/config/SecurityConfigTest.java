@@ -6,13 +6,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SecurityConfigTest {
+class SecurityConfigTest {
 
     @Autowired
     private WebTestClient webClient;
 
     @Test
-    public void givenUnauthenticated_thenUnauthorizedResponse() throws Exception {
+    void givenUnauthenticated_thenUnauthorizedResponse() throws Exception {
         webClient
                 .get().uri("/")
                 .exchange()

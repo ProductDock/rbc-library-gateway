@@ -16,11 +16,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureWireMock(port = 8082)
-public class SearchRouteTest {
+class SearchRouteTest {
 
     @Test
     @WithMockUser
-    public void givenAuthenticated_thenRequestSentToSearchService() throws Exception {
+    void givenAuthenticated_thenRequestSentToSearchService() throws Exception {
         stubFor(get(urlEqualTo("/api/search/books"))
                 .willReturn(aResponse()
                         .withStatus(200)));

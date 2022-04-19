@@ -16,11 +16,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureWireMock(port = 8081)
-public class CatalogRouteTest {
+class CatalogRouteTest {
 
     @Test
     @WithMockUser
-    public void givenAuthenticated_thenRequestSentToCatalogService() throws Exception {
+    void givenAuthenticated_thenRequestSentToCatalogService() throws Exception {
         stubFor(get(urlEqualTo("/api/catalog/books"))
                 .willReturn(aResponse()
                         .withStatus(200)));
