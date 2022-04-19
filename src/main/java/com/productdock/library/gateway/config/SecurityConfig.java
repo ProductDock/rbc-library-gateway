@@ -13,7 +13,7 @@ import static java.util.Arrays.asList;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @EnableWebFluxSecurity
-class SecurityConfig {
+public class SecurityConfig {
 
     @Value("${cors.allowed.origins}")
     private String corsAllowedOrigins;
