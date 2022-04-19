@@ -19,7 +19,7 @@ public class SecurityConfig {
     private String corsAllowedOrigins;
 
     @Bean
-    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) throws Exception {
+    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http.csrf().disable()
                 .authorizeExchange()
                 .pathMatchers("/**").authenticated()
