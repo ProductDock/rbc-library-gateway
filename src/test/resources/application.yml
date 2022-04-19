@@ -1,0 +1,25 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://placeholder
+          jwk-set-uri: http://placeholder
+  cloud:
+    gateway:
+      routes:
+        - id: catalog-route
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/catalog/books/**
+        - id: search-route
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/search/**
+        - id: rental-route
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/rental/**
+cors:
+  allowed:
+    origins: http://localhost:3000
