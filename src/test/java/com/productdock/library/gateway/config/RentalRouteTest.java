@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import wiremock.org.apache.http.HttpResponse;
 import wiremock.org.apache.http.client.methods.HttpGet;
 import wiremock.org.apache.http.impl.client.CloseableHttpClient;
@@ -15,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureWireMock(port = 8083)
+@ActiveProfiles("test")
 class RentalRouteTest {
 
     @Test
