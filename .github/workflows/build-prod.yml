@@ -46,7 +46,7 @@ jobs:
 
       - name: 'Build docker image with Version tag'
         run: |-
-          docker build --build-arg PASSWORD=${{ secrets.DATABASE_PASSWORD }} --build-arg ACTIVE_PROFILE=${{ secrets.ACTIVE_PROFILE }} --tag "$DOCKER_IMAGE_NAME:$VERSION" .
+          docker build --build-arg ACTIVE_PROFILE=${{ secrets.ACTIVE_PROFILE }} --tag "$DOCKER_IMAGE_NAME:$VERSION" .
 
       - name: 'Publish docker image'
         run: |-
