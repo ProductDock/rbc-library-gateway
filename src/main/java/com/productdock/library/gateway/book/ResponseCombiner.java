@@ -14,7 +14,7 @@ public record ResponseCombiner(RentalRecordsMapper rentalRecordsMapper) {
         var rentalRecords = rentalRecordsMapper.toDomain(rentalRecordsDto);
         var i = 0;
         while(i < availableBooksCount){
-            rentalRecords.records.add(new RentalRecords.BookInteraction("", BookStatus.AVAILABLE));
+            rentalRecords.add(new RentalRecords.BookInteraction("", BookStatus.AVAILABLE));
             i++;
         }
         return rentalRecordsMapper.toDto(rentalRecords);

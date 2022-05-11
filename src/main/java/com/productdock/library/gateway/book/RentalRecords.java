@@ -1,18 +1,25 @@
 package com.productdock.library.gateway.book;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Data
 public class RentalRecords {
 
-    public List<BookInteraction> records;
+    private List<BookInteraction> records;
+
+    public void add(BookInteraction bookInteraction){
+        this.records.add(bookInteraction);
+    }
 
     @AllArgsConstructor
     @NoArgsConstructor
+    @Data
     public static class BookInteraction{
-        public String email;
-        public BookStatus status;
+        private String email;
+        private BookStatus status;
     }
 }
