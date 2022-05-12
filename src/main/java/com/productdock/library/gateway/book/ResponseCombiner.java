@@ -1,9 +1,13 @@
 package com.productdock.library.gateway.book;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public record ResponseCombiner(RentalRecordsMapper rentalRecordsMapper) {
+public class ResponseCombiner{
+
+    @Autowired
+    private RentalRecordsMapper rentalRecordsMapper;
 
     public BookDetailsDto generateBookDetailsDto(BookDto book, RentalRecordsDto rentalRecords, int availableBooksCount) {
         var allRecords = addAvailableRecords(rentalRecords, availableBooksCount);
@@ -12,11 +16,12 @@ public record ResponseCombiner(RentalRecordsMapper rentalRecordsMapper) {
 
     private RentalRecordsDto addAvailableRecords(RentalRecordsDto rentalRecordsDto, int availableBooksCount) {
         var rentalRecords = rentalRecordsMapper.toDomain(rentalRecordsDto);
-        var i = 0;
-        while(i < availableBooksCount){
-            rentalRecords.add(new RentalRecords.BookInteraction("", BookStatus.AVAILABLE));
-            i++;
-        }
-        return rentalRecordsMapper.toDto(rentalRecords);
+//        var i = 0;
+//        while(i < availableBooksCount){
+//         //   rentalRecords.add(new RentalRecords.BookInteraction("", BookStatus.AVAILABLE));
+//            i++;
+//        }
+        //return rentalRecordsMapper.toDto(rentalRecords);
+        return new RentalRecordsDto();
     }
 }
