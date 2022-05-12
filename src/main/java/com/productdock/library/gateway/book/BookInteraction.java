@@ -5,13 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
 @Data
-public class RentalRecordsDto {
-    public List<BookRecordDto> records = new ArrayList<>();
+@Builder
+public class BookInteraction {
+    private String email;
+    private BookStatus status;
 }

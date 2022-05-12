@@ -6,8 +6,8 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 public interface BookRecordMapper {
 
-    BookRecordDto toDto(RentalRecords.BookInteraction bookInteraction);
+    BookRecordDto toDto(BookInteraction bookInteraction);
 
-    RentalRecords.BookInteraction toDomain(BookRecordDto bookRecordDto);
+    BookInteraction toDomain(BookRecordDto bookRecordDto);
 
 }

@@ -7,10 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Arrays;
 import java.util.List;
 
-import static com.productdock.library.gateway.data.provider.RentalRecordsDtoMother.defaultRentalRecordsDto;
-import static com.productdock.library.gateway.data.provider.RentalRecordsMother.defaultRentalRecord;
+import static com.productdock.library.gateway.data.provider.BookInteractionMother.defaultBookInteraction;
+import static com.productdock.library.gateway.data.provider.BookRecordDtoMother.defaultBookRecordDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -25,30 +26,30 @@ class RentalRecordsMapperShould {
 
     @Test
     void mapRentalRecordDtoToRentalRecord() {
-        var rentalRecordDto = defaultRentalRecordsDto();
+        var rentalRecordsDto = Arrays.asList(defaultBookRecordDto());
 
-        var bookRentalRecords = rentalRecordsMapper.toDomain(rentalRecordDto);
+        var bookRentalRecords = rentalRecordsMapper.toDomain(rentalRecordsDto);
 
-        assertThatRecordsAreMatching(bookRentalRecords.getRecords(), rentalRecordDto.getRecords());
+        assertThatRecordsAreMatching(bookRentalRecords, rentalRecordsDto);
     }
 
     @Test
     void mapRentalRecordToRentalRecordDto() {
-        var rentalRecords = defaultRentalRecord();
+        var rentalRecords = Arrays.asList(defaultBookInteraction());
 
         var bookRentalRecordsDto = rentalRecordsMapper.toDto(rentalRecords);
 
-        assertThatRecordsAreMatching(rentalRecords.getRecords(), bookRentalRecordsDto.getRecords());
+        assertThatRecordsAreMatching(rentalRecords, bookRentalRecordsDto);
     }
 
-    private void assertThatRecordsAreMatching(List<RentalRecords.BookInteraction> rentalRecords, List<BookRecordDto> rentalRecordsDto) {
+    private void assertThatRecordsAreMatching(List<BookInteraction> rentalRecords, List<BookRecordDto> rentalRecordsDto) {
         assertThat(rentalRecords).hasSameSizeAs(rentalRecordsDto);
         var rentalRecord = rentalRecords.get(0);
         var rentalRecordDto = rentalRecordsDto.get(0);
         assertThatBookCopyIsMatching(rentalRecord, rentalRecordDto);
     }
 
-    private void assertThatBookCopyIsMatching(RentalRecords.BookInteraction rentalRecord, BookRecordDto recordDto) {
+    private void assertThatBookCopyIsMatching(BookInteraction rentalRecord, BookRecordDto recordDto) {
         assertThat(rentalRecord.getEmail()).isEqualTo(recordDto.getEmail());
         assertThat(rentalRecord.getStatus()).isEqualTo(recordDto.getStatus());
     }
