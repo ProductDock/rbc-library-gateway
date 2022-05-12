@@ -13,7 +13,7 @@ public class ResponseCombiner{
 
     public BookDetailsDto generateBookDetailsDto(BookDto book, List<BookRecordDto> rentalRecords, int availableBooksCount) {
         var allRecords = addAvailableRecords(rentalRecords, availableBooksCount);
-        return new BookDetailsDto(book.id, book.author, book.title, book.cover, allRecords);
+        return new BookDetailsDto(book.id, book.title, book.author, book.cover, allRecords);
     }
 
     private List<BookRecordDto> addAvailableRecords(List<BookRecordDto> rentalRecordsDto, int availableBooksCount) {

@@ -12,15 +12,22 @@ public class CatalogServiceClient {
     @Value("${catalog.service.url}/api/catalog/books/")
     private String catalogServiceUrl;
 
+    private WebClient webClient;
+
+    public CatalogServiceClient(){
+        this.webClient = WebClient.create();
+    }
+
     public Mono<BookDto> getBookData(String bookId, String jwtToken){
         var catalogBookDetailsUrl = catalogServiceUrl + bookId;
-        return WebClient.create()
+        return webClient
                 .get()
                 .uri(catalogBookDetailsUrl)
                 .header("Authorization", jwtToken)
                 .retrieve()
                 .bodyToMono(BookDto.class)
                 .onErrorReturn(RuntimeException.class,new BookDto());
+
     }
 
 }

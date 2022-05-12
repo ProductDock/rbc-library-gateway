@@ -28,7 +28,7 @@ class BookServiceShould {
 
     private static final String BOOK_ID = "1";
     private static final String JWT_TOKEN = "";
-    private static final int AVAILABLE_BOOK_COUNT = 0;
+    private static final int AVAILABLE_BOOK_COUNT = 1;
     private static final Mono<BookDto> BOOK_DTO_MONO = Mono.just(defaultBookDto());
     private static final Mono<List<BookRecordDto>> RENTAL_RECORDS_DTO_MONO = Mono.just(Arrays.asList(defaultBookRecordDto()));
     private static final Mono<Integer> AVAILABLE_BOOK_COUNT_MONO = Mono.just(AVAILABLE_BOOK_COUNT);
@@ -54,7 +54,7 @@ class BookServiceShould {
         given(catalogServiceClient.getBookData(BOOK_ID, JWT_TOKEN)).willReturn(BOOK_DTO_MONO);
         given(rentalServiceClient.getBookRentalRecords(BOOK_ID, JWT_TOKEN)).willReturn(RENTAL_RECORDS_DTO_MONO);
         given(inventoryServiceClient.getAvailableBookCopiesCount(BOOK_ID, JWT_TOKEN)).willReturn(AVAILABLE_BOOK_COUNT_MONO);
-        given(responseCombiner.generateBookDetailsDto(defaultBookDto(), Arrays.asList(defaultBookRecordDto()), AVAILABLE_BOOK_COUNT)).willReturn(BOOK_DETAILS_DTO_MONO);
+        given(responseCombiner.generateBookDetailsDto(defaultBookDto(), List.of(defaultBookRecordDto()), AVAILABLE_BOOK_COUNT)).willReturn(BOOK_DETAILS_DTO_MONO);
 
         var bookDetails = bookService.getBookDetails(BOOK_ID, JWT_TOKEN);
 

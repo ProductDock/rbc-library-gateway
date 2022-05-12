@@ -26,7 +26,7 @@ class RentalRecordsMapperShould {
 
     @Test
     void mapRentalRecordDtoToRentalRecord() {
-        var rentalRecordsDto = Arrays.asList(defaultBookRecordDto());
+        var rentalRecordsDto = List.of(defaultBookRecordDto());
 
         var bookRentalRecords = rentalRecordsMapper.toDomain(rentalRecordsDto);
 
@@ -35,7 +35,7 @@ class RentalRecordsMapperShould {
 
     @Test
     void mapRentalRecordToRentalRecordDto() {
-        var rentalRecords = Arrays.asList(defaultBookInteraction());
+        var rentalRecords = List.of(defaultBookInteraction());
 
         var bookRentalRecordsDto = rentalRecordsMapper.toDto(rentalRecords);
 
