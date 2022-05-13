@@ -4,8 +4,6 @@ import com.productdock.library.gateway.book.BookDetailsDto;
 import com.productdock.library.gateway.book.BookDto;
 import com.productdock.library.gateway.book.BookRentalRecordDto;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.productdock.library.gateway.data.provider.BookDtoMother.defaultBookDto;
@@ -13,9 +11,8 @@ import static com.productdock.library.gateway.data.provider.BookRentalRecordDtoM
 
 public class BookDetailsDtoMother {
 
-    private static BookDto bookDto = defaultBookDto();
-    private static final List<BookRentalRecordDto> defaultRecords = new ArrayList<>
-            (Arrays.asList(defaultBookRentalRecordDto()));
+    private static final BookDto bookDto = defaultBookDto();
+    private static final List<BookRentalRecordDto> defaultRecords = (List.of(defaultBookRentalRecordDto()));
 
     public static BookDetailsDto defaultBookDetailsDto() {
         return new BookDetailsDto(bookDto, defaultRecords);

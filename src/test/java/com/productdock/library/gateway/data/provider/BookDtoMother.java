@@ -1,7 +1,6 @@
 package com.productdock.library.gateway.data.provider;
 
 import com.productdock.library.gateway.book.BookDto;
-import com.productdock.library.gateway.book.BookStatus;
 
 public class BookDtoMother {
     private static final String defaultBookId = "1";
