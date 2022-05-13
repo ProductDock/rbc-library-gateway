@@ -1,21 +1,25 @@
 package com.productdock.library.gateway.service;
 
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.hamcrest.Matchers.empty;
-import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.*;
+import java.io.IOException;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@AutoConfigureWireMock(port = 8081)
+import static org.hamcrest.Matchers.empty;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockJwt;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.springSecurity;
+
+@SpringBootTest
 @ActiveProfiles("test")
 class BookApiTest{
 
@@ -25,6 +29,19 @@ class BookApiTest{
     ApplicationContext context;
 
     WebTestClient rest;
+
+    public static MockWebServer mockBackEnd;
+
+    @BeforeAll
+    static void setUp() throws IOException {
+        mockBackEnd = new MockWebServer();
+        mockBackEnd.start(8081);
+    }
+
+    @AfterAll
+    static void tearDown() throws IOException {
+        mockBackEnd.shutdown();
+    }
 
     @BeforeEach
     public void setup() {
@@ -38,12 +55,11 @@ class BookApiTest{
     @Test
     @WithMockUser
     void givenBookId_thenGetBookDetails() throws Exception {
-        stubFor(get(urlEqualTo("/api/catalog/books/" + bookId))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withBody("{\"id\": \"1\", \"title\": \"Title\", \"author\": \"John Doe\", \"cover\": \"Cover\"}")));
+        mockBackEnd.enqueue(new MockResponse()
+                .setBody("{\"id\": \"1\", \"title\": \"Title\", \"author\": \"John Doe\", \"cover\": \"Cover\"}")
+                .addHeader("Content-Type", "application/json"));
 
-        rest.mutateWith(mockJwt()).get().uri("http://localhost:8080/api/books/" + bookId)
+        rest.mutateWith(mockJwt()).get().uri("/api/books/" + bookId)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
