@@ -1,0 +1,72 @@
+package com.productdock.library.gateway.service;
+
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.io.IOException;
+
+import static org.hamcrest.Matchers.empty;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockJwt;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.springSecurity;
+
+@SpringBootTest
+@ActiveProfiles("test")
+class BookApiTest{
+
+    private static final String bookId= "1";
+
+    @Autowired
+    ApplicationContext context;
+
+    WebTestClient rest;
+
+    public static MockWebServer mockBackEnd;
+
+    @BeforeAll
+    static void setUp() throws IOException {
+        mockBackEnd = new MockWebServer();
+        mockBackEnd.start(8081);
+    }
+
+    @AfterAll
+    static void tearDown() throws IOException {
+        mockBackEnd.shutdown();
+    }
+
+    @BeforeEach
+    public void setup() {
+        this.rest = WebTestClient
+                .bindToApplicationContext(this.context)
+                .apply(springSecurity())
+                .configureClient()
+                .build();
+    }
+
+    @Test
+    @WithMockUser
+    void givenBookId_thenGetBookDetails() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+                .setBody("{\"id\": \"1\", \"title\": \"Title\", \"author\": \"John Doe\", \"cover\": \"Cover\"}")
+                .addHeader("Content-Type", "application/json"));
+
+        rest.mutateWith(mockJwt()).get().uri("/api/books/" + bookId)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.id").isEqualTo("1")
+                .jsonPath("$.title").isEqualTo("Title")
+                .jsonPath("$.author").isEqualTo("John Doe")
+                .jsonPath("$.cover").isEqualTo("Cover")
+                .jsonPath("$.records").value(empty());
+    }
+}
