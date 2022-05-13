@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 public record BookService(CatalogServiceClient catalogClient, RentalServiceClient rentalClient,
-                          InventoryServiceClient inventoryClient, ResponseCombiner responseCombiner) {
+                          InventoryServiceClient inventoryClient, BookDetailsResponseCombiner bookDetailsResponseCombiner) {
 
     @SneakyThrows
     public BookDetailsDto getBookDetails(String bookId, String jwtToken) {
@@ -18,7 +18,7 @@ public record BookService(CatalogServiceClient catalogClient, RentalServiceClien
         var availableBooksCountMono = inventoryClient.getAvailableBookCopiesCount(bookId, jwtToken);
 
         var bookDetailsDtoMono = Mono.zip(bookDtoMono, rentalRecordsDtoMono, availableBooksCountMono).flatMap(tuple -> {
-            var book = responseCombiner.generateBookDetailsDto(tuple.getT1(), tuple.getT2(), tuple.getT3());
+            var book = bookDetailsResponseCombiner.generateBookDetailsDto(tuple.getT1(), tuple.getT2(), tuple.getT3());
             return Mono.just(book);
         });
         return bookDetailsDtoMono.toFuture().get();

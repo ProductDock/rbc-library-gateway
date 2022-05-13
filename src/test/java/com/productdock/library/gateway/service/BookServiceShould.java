@@ -16,7 +16,7 @@ import java.util.List;
 
 import static com.productdock.library.gateway.data.provider.BookDetailsDtoMother.defaultBookDetailsDto;
 import static com.productdock.library.gateway.data.provider.BookDtoMother.defaultBookDto;
-import static com.productdock.library.gateway.data.provider.BookRecordDtoMother.defaultBookRecordDto;
+import static com.productdock.library.gateway.data.provider.BookRentalRecordDtoMother.defaultBookRentalRecordDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
@@ -27,7 +27,7 @@ class BookServiceShould {
     private static final String JWT_TOKEN = "";
     private static final int AVAILABLE_BOOK_COUNT = 1;
     private static final Mono<BookDto> BOOK_DTO_MONO = Mono.just(defaultBookDto());
-    private static final Mono<List<BookRecordDto>> RENTAL_RECORDS_DTO_MONO = Mono.just(Arrays.asList(defaultBookRecordDto()));
+    private static final Mono<List<BookRentalRecordDto>> RENTAL_RECORDS_DTO_MONO = Mono.just(Arrays.asList(defaultBookRentalRecordDto()));
     private static final Mono<Integer> AVAILABLE_BOOK_COUNT_MONO = Mono.just(AVAILABLE_BOOK_COUNT);
     private static final BookDetailsDto BOOK_DETAILS_DTO_MONO = defaultBookDetailsDto();
 
@@ -44,14 +44,14 @@ class BookServiceShould {
     private InventoryServiceClient inventoryServiceClient;
 
     @Mock
-    private ResponseCombiner responseCombiner;
+    private BookDetailsResponseCombiner bookDetailsResponseCombiner;
 
     @Test
     void generateBookDetailsDto() {
         given(catalogServiceClient.getBookData(BOOK_ID, JWT_TOKEN)).willReturn(BOOK_DTO_MONO);
         given(rentalServiceClient.getBookRentalRecords(BOOK_ID, JWT_TOKEN)).willReturn(RENTAL_RECORDS_DTO_MONO);
         given(inventoryServiceClient.getAvailableBookCopiesCount(BOOK_ID, JWT_TOKEN)).willReturn(AVAILABLE_BOOK_COUNT_MONO);
-        given(responseCombiner.generateBookDetailsDto(defaultBookDto(), List.of(defaultBookRecordDto()), AVAILABLE_BOOK_COUNT)).willReturn(BOOK_DETAILS_DTO_MONO);
+        given(bookDetailsResponseCombiner.generateBookDetailsDto(defaultBookDto(), List.of(defaultBookRentalRecordDto()), AVAILABLE_BOOK_COUNT)).willReturn(BOOK_DETAILS_DTO_MONO);
 
         var bookDetails = bookService.getBookDetails(BOOK_ID, JWT_TOKEN);
 

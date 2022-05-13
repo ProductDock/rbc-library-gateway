@@ -10,9 +10,9 @@ import java.util.List;
 public interface RentalRecordsMapper {
 
     @Mapping(target = "records", source = "source.records")
-    List<BookInteraction> toDomain(List<BookRecordDto> source);
+    List<BookInteraction> toDomain(List<BookRentalRecordDto> source);
 
     @Mapping(target = "records", source = "source.records")
-    List<BookRecordDto> toDto(List<BookInteraction> source);
+    List<BookRentalRecordDto> toDto(List<BookInteraction> source);
 
 }

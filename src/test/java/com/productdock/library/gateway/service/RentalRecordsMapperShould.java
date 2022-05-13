@@ -7,11 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static com.productdock.library.gateway.data.provider.BookInteractionMother.defaultBookInteraction;
-import static com.productdock.library.gateway.data.provider.BookRecordDtoMother.defaultBookRecordDto;
+import static com.productdock.library.gateway.data.provider.BookRentalRecordDtoMother.defaultBookRentalRecordDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -26,7 +25,7 @@ class RentalRecordsMapperShould {
 
     @Test
     void mapRentalRecordDtoToRentalRecord() {
-        var rentalRecordsDto = List.of(defaultBookRecordDto());
+        var rentalRecordsDto = List.of(defaultBookRentalRecordDto());
 
         var bookRentalRecords = rentalRecordsMapper.toDomain(rentalRecordsDto);
 
@@ -42,14 +41,14 @@ class RentalRecordsMapperShould {
         assertThatRecordsAreMatching(rentalRecords, bookRentalRecordsDto);
     }
 
-    private void assertThatRecordsAreMatching(List<BookInteraction> rentalRecords, List<BookRecordDto> rentalRecordsDto) {
+    private void assertThatRecordsAreMatching(List<BookInteraction> rentalRecords, List<BookRentalRecordDto> rentalRecordsDto) {
         assertThat(rentalRecords).hasSameSizeAs(rentalRecordsDto);
         var rentalRecord = rentalRecords.get(0);
         var rentalRecordDto = rentalRecordsDto.get(0);
         assertThatBookCopyIsMatching(rentalRecord, rentalRecordDto);
     }
 
-    private void assertThatBookCopyIsMatching(BookInteraction rentalRecord, BookRecordDto recordDto) {
+    private void assertThatBookCopyIsMatching(BookInteraction rentalRecord, BookRentalRecordDto recordDto) {
         assertThat(rentalRecord.getEmail()).isEqualTo(recordDto.getEmail());
         assertThat(rentalRecord.getStatus()).isEqualTo(recordDto.getStatus());
     }

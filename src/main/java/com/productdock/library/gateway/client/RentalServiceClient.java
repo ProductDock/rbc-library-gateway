@@ -1,6 +1,6 @@
 package com.productdock.library.gateway.client;
 
-import com.productdock.library.gateway.book.BookRecordDto;
+import com.productdock.library.gateway.book.BookRentalRecordDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -22,14 +22,14 @@ public class RentalServiceClient {
         this.webClient = WebClient.create();
     }
 
-    public Mono<List<BookRecordDto>> getBookRentalRecords(String bookId, String jwtToken){
+    public Mono<List<BookRentalRecordDto>> getBookRentalRecords(String bookId, String jwtToken){
         var rentalBookRecordsUrl = rentalServiceUrl + bookId;
         return webClient
                 .get()
                 .uri(rentalBookRecordsUrl)
                 .header("Authorization", jwtToken)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<BookRecordDto>>() {})
-                .onErrorReturn(RuntimeException.class,new ArrayList<BookRecordDto>());
+                .bodyToMono(new ParameterizedTypeReference<List<BookRentalRecordDto>>() {})
+                .onErrorReturn(RuntimeException.class,new ArrayList<BookRentalRecordDto>());
     }
 }
