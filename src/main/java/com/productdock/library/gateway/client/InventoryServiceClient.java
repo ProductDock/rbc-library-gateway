@@ -11,9 +11,15 @@ public class InventoryServiceClient {
     @Value("${inventory.service.url}/api/inventory/books/")
     private String inventoryServiceUrl;
 
+    private WebClient webClient;
+
+    public InventoryServiceClient(){
+        this.webClient = WebClient.create();
+    }
+
     public Mono<Integer> getAvailableBookCopiesCount(String bookId, String jwtToken){
         var inventoryBookUrl = inventoryServiceUrl + bookId;
-        return WebClient.create()
+        return webClient
                 .get()
                 .uri(inventoryBookUrl)
                 .header("Authorization", jwtToken)

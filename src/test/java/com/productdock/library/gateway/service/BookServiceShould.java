@@ -11,17 +11,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static com.productdock.library.gateway.data.provider.BookDetailsDtoMother.defaultBookDetailsDto;
 import static com.productdock.library.gateway.data.provider.BookDtoMother.defaultBookDto;
-import static com.productdock.library.gateway.data.provider.BookInteractionMother.defaultBookInteraction;
 import static com.productdock.library.gateway.data.provider.BookRecordDtoMother.defaultBookRecordDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceShould {

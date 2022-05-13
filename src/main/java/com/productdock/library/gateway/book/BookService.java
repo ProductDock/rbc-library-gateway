@@ -8,14 +8,14 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
-public record BookService(CatalogServiceClient catalogServiceClient, RentalServiceClient rentalServiceClient,
-                          InventoryServiceClient inventoryServiceClient, ResponseCombiner responseCombiner) {
+public record BookService(CatalogServiceClient catalogClient, RentalServiceClient rentalClient,
+                          InventoryServiceClient inventoryClient, ResponseCombiner responseCombiner) {
 
     @SneakyThrows
     public BookDetailsDto getBookDetails(String bookId, String jwtToken) {
-        var bookDtoMono = catalogServiceClient.getBookData(bookId, jwtToken);
-        var rentalRecordsDtoMono = rentalServiceClient.getBookRentalRecords(bookId, jwtToken);
-        var availableBooksCountMono = inventoryServiceClient.getAvailableBookCopiesCount(bookId, jwtToken);
+        var bookDtoMono = catalogClient.getBookData(bookId, jwtToken);
+        var rentalRecordsDtoMono = rentalClient.getBookRentalRecords(bookId, jwtToken);
+        var availableBooksCountMono = inventoryClient.getAvailableBookCopiesCount(bookId, jwtToken);
 
         var bookDetailsDtoMono = Mono.zip(bookDtoMono, rentalRecordsDtoMono, availableBooksCountMono).flatMap(tuple -> {
             var book = responseCombiner.generateBookDetailsDto(tuple.getT1(), tuple.getT2(), tuple.getT3());

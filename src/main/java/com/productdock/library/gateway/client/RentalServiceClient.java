@@ -16,9 +16,15 @@ public class RentalServiceClient {
     @Value("${rental.service.url}/api/rental/record/")
     private String rentalServiceUrl;
 
+    private WebClient webClient;
+
+    public RentalServiceClient(){
+        this.webClient = WebClient.create();
+    }
+
     public Mono<List<BookRecordDto>> getBookRentalRecords(String bookId, String jwtToken){
         var rentalBookRecordsUrl = rentalServiceUrl + bookId;
-        return WebClient.create()
+        return webClient
                 .get()
                 .uri(rentalBookRecordsUrl)
                 .header("Authorization", jwtToken)

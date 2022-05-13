@@ -1,6 +1,5 @@
 package com.productdock.library.gateway.client;
 
-import com.productdock.library.gateway.book.BookDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,10 +13,10 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
-class CatalogServiceClientShould {
+class InventoryServiceClientShould {
 
     @InjectMocks
-    private CatalogServiceClient catalogServiceClient;
+    private InventoryServiceClient inventoryServiceClient;
 
     @Mock
     private WebClient webClientMock;
@@ -34,8 +33,8 @@ class CatalogServiceClientShould {
         WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);
         given(headerSpec.retrieve()).willReturn(responseSpec);
 
-        given(responseSpec.bodyToMono(BookDto.class)).willReturn(Mono.empty());
+        given(responseSpec.bodyToMono(Integer.class)).willReturn(Mono.empty());
 
-        catalogServiceClient.getBookData("12345", "Token");
+        inventoryServiceClient.getAvailableBookCopiesCount("12345", "Token");
     }
 }

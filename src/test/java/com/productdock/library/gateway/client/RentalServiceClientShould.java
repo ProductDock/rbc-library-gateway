@@ -1,23 +1,26 @@
 package com.productdock.library.gateway.client;
 
-import com.productdock.library.gateway.book.BookDto;
+import com.productdock.library.gateway.book.BookRecordDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
-class CatalogServiceClientShould {
+class RentalServiceClientShould {
 
     @InjectMocks
-    private CatalogServiceClient catalogServiceClient;
+    private RentalServiceClient rentalServiceClient;
 
     @Mock
     private WebClient webClientMock;
@@ -34,8 +37,8 @@ class CatalogServiceClientShould {
         WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);
         given(headerSpec.retrieve()).willReturn(responseSpec);
 
-        given(responseSpec.bodyToMono(BookDto.class)).willReturn(Mono.empty());
+        given(responseSpec.bodyToMono(new ParameterizedTypeReference<List<BookRecordDto>>() {})).willReturn(Mono.empty());
 
-        catalogServiceClient.getBookData("12345", "Token");
+        rentalServiceClient.getBookRentalRecords("12345", "Token");
     }
 }
