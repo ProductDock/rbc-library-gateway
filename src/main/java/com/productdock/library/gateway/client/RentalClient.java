@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class RentalServiceClient {
+public class RentalClient {
 
     @Value("${rental.service.url}/api/rental/record/")
     private String rentalServiceUrl;
 
     private WebClient webClient;
 
-    public RentalServiceClient(){
+    public RentalClient(){
         this.webClient = WebClient.create();
     }
 

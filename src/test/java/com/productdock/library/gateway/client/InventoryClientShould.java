@@ -7,16 +7,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
-class InventoryServiceClientShould {
+class InventoryClientShould {
 
     @InjectMocks
-    private InventoryServiceClient inventoryServiceClient;
+    private InventoryClient inventoryClient;
 
     @Mock
     private WebClient webClientMock;
@@ -35,6 +36,8 @@ class InventoryServiceClientShould {
 
         given(responseSpec.bodyToMono(Integer.class)).willReturn(Mono.empty());
 
-        inventoryServiceClient.getAvailableBookCopiesCount("12345", "Token");
+        var availableBooksCountMono = inventoryClient.getAvailableBookCopiesCount("12345", "Token");
+
+        StepVerifier.create(availableBooksCountMono).verifyComplete();
     }
 }

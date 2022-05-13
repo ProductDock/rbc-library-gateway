@@ -8,16 +8,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
-class CatalogServiceClientShould {
+class CatalogClientShould {
 
     @InjectMocks
-    private CatalogServiceClient catalogServiceClient;
+    private CatalogClient catalogClient;
 
     @Mock
     private WebClient webClientMock;
@@ -36,6 +37,8 @@ class CatalogServiceClientShould {
 
         given(responseSpec.bodyToMono(BookDto.class)).willReturn(Mono.empty());
 
-        catalogServiceClient.getBookData("12345", "Token");
+        var bookMono = catalogClient.getBookData("12345", "Token");
+
+        StepVerifier.create(bookMono).verifyComplete();
     }
 }

@@ -6,14 +6,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Component
-public class InventoryServiceClient {
+public class InventoryClient {
 
     @Value("${inventory.service.url}/api/inventory/books/")
     private String inventoryServiceUrl;
 
     private WebClient webClient;
 
-    public InventoryServiceClient(){
+    public InventoryClient(){
         this.webClient = WebClient.create();
     }
 

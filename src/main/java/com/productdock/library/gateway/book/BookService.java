@@ -1,15 +1,15 @@
 package com.productdock.library.gateway.book;
 
-import com.productdock.library.gateway.client.CatalogServiceClient;
-import com.productdock.library.gateway.client.InventoryServiceClient;
-import com.productdock.library.gateway.client.RentalServiceClient;
+import com.productdock.library.gateway.client.CatalogClient;
+import com.productdock.library.gateway.client.InventoryClient;
+import com.productdock.library.gateway.client.RentalClient;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
-public record BookService(CatalogServiceClient catalogClient, RentalServiceClient rentalClient,
-                          InventoryServiceClient inventoryClient, BookDetailsResponseCombiner bookDetailsResponseCombiner) {
+public record BookService(CatalogClient catalogClient, RentalClient rentalClient,
+                          InventoryClient inventoryClient, BookDetailsResponseCombiner bookDetailsResponseCombiner) {
 
     @SneakyThrows
     public BookDetailsDto getBookDetails(String bookId, String jwtToken) {

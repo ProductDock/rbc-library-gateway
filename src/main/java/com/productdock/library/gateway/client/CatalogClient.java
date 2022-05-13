@@ -7,14 +7,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Component
-public class CatalogServiceClient {
+public class CatalogClient {
 
     @Value("${catalog.service.url}/api/catalog/books/")
     private String catalogServiceUrl;
 
     private WebClient webClient;
 
-    public CatalogServiceClient(){
+    public CatalogClient(){
         this.webClient = WebClient.create();
     }
 

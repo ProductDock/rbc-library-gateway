@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.util.List;
 
@@ -17,16 +18,13 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
-class RentalServiceClientShould {
+class RentalClientShould {
 
     @InjectMocks
-    private RentalServiceClient rentalServiceClient;
+    private RentalClient rentalClient;
 
     @Mock
     private WebClient webClientMock;
-
-    //    @Captor
-//    private CaptorValue<URI> uriValue;
 
     @Test
     void setupClientRequestWithGivenParams() {
@@ -42,6 +40,8 @@ class RentalServiceClientShould {
 
         given(responseSpec.bodyToMono(new ParameterizedTypeReference<List<BookRentalRecordDto>>() {})).willReturn(Mono.empty());
 
-        rentalServiceClient.getBookRentalRecords("12345", "Token");
+        var bookRentalRecordsMono = rentalClient.getBookRentalRecords("12345", "Token");
+
+        StepVerifier.create(bookRentalRecordsMono).verifyComplete();
     }
 }

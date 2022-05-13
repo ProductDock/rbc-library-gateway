@@ -1,9 +1,9 @@
 package com.productdock.library.gateway.service;
 
 import com.productdock.library.gateway.book.*;
-import com.productdock.library.gateway.client.CatalogServiceClient;
-import com.productdock.library.gateway.client.InventoryServiceClient;
-import com.productdock.library.gateway.client.RentalServiceClient;
+import com.productdock.library.gateway.client.CatalogClient;
+import com.productdock.library.gateway.client.InventoryClient;
+import com.productdock.library.gateway.client.RentalClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,22 +35,22 @@ class BookServiceShould {
     private BookService bookService;
 
     @Mock
-    private CatalogServiceClient catalogServiceClient;
+    private CatalogClient catalogClient;
 
     @Mock
-    private RentalServiceClient rentalServiceClient;
+    private RentalClient rentalClient;
 
     @Mock
-    private InventoryServiceClient inventoryServiceClient;
+    private InventoryClient inventoryClient;
 
     @Mock
     private BookDetailsResponseCombiner bookDetailsResponseCombiner;
 
     @Test
     void generateBookDetailsDto() {
-        given(catalogServiceClient.getBookData(BOOK_ID, JWT_TOKEN)).willReturn(BOOK_DTO_MONO);
-        given(rentalServiceClient.getBookRentalRecords(BOOK_ID, JWT_TOKEN)).willReturn(RENTAL_RECORDS_DTO_MONO);
-        given(inventoryServiceClient.getAvailableBookCopiesCount(BOOK_ID, JWT_TOKEN)).willReturn(AVAILABLE_BOOK_COUNT_MONO);
+        given(catalogClient.getBookData(BOOK_ID, JWT_TOKEN)).willReturn(BOOK_DTO_MONO);
+        given(rentalClient.getBookRentalRecords(BOOK_ID, JWT_TOKEN)).willReturn(RENTAL_RECORDS_DTO_MONO);
+        given(inventoryClient.getAvailableBookCopiesCount(BOOK_ID, JWT_TOKEN)).willReturn(AVAILABLE_BOOK_COUNT_MONO);
         given(bookDetailsResponseCombiner.generateBookDetailsDto(defaultBookDto(), List.of(defaultBookRentalRecordDto()), AVAILABLE_BOOK_COUNT)).willReturn(BOOK_DETAILS_DTO_MONO);
 
         var bookDetails = bookService.getBookDetails(BOOK_ID, JWT_TOKEN);
