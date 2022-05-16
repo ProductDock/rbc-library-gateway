@@ -15,15 +15,17 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.io.IOException;
 
+import static com.productdock.library.gateway.data.provider.ReviewDtoMother.defaultReviewDto;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockJwt;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.springSecurity;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class BookApiTest{
+class BookApiTest {
 
-    private static final String bookId= "1";
+    private static final String bookId = "1";
 
     @Autowired
     ApplicationContext context;
@@ -56,7 +58,8 @@ class BookApiTest{
     @WithMockUser
     void givenBookId_thenGetBookDetails() throws Exception {
         mockBackEnd.enqueue(new MockResponse()
-                .setBody("{\"id\": \"1\", \"title\": \"Title\", \"author\": \"John Doe\", \"cover\": \"Cover\"}")
+                .setBody("{\"id\": \"1\", \"title\": \"Title\", \"author\": \"John Doe\", \"cover\": \"Cover\", " +
+                        "\"reviews\":[{\"userFullName\":\"John Doe\",\"rating\":5,\"recommendation\":[\"JUNIOR\"],\"comment\":\"Must read!\"}]}")
                 .addHeader("Content-Type", "application/json"));
 
         rest.mutateWith(mockJwt()).get().uri("/api/books/" + bookId)
@@ -67,6 +70,11 @@ class BookApiTest{
                 .jsonPath("$.title").isEqualTo("Title")
                 .jsonPath("$.author").isEqualTo("John Doe")
                 .jsonPath("$.cover").isEqualTo("Cover")
+                .jsonPath("$.reviews[0].userFullName").isEqualTo("John Doe")
+                .jsonPath("$.reviews[0].rating").isEqualTo(5)
+                .jsonPath("$.reviews[0].recommendation[0]").isEqualTo("JUNIOR")
+                .jsonPath("$.reviews[0].recommendation").value(hasSize(1))
+                .jsonPath("$.reviews[0].comment").isEqualTo("Must read!")
                 .jsonPath("$.records").value(empty());
     }
 }

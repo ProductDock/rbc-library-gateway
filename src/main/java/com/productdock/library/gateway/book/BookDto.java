@@ -18,6 +18,10 @@ public class BookDto {
     public String cover;
     public List<ReviewDto> reviews;
 
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class ReviewDto {
 
         public String userFullName;
