@@ -12,7 +12,7 @@ public class BookDetailsDto extends BookDto {
     public List<BookRentalRecordDto> records;
 
     public BookDetailsDto(BookDto bookDto, List<BookRentalRecordDto> records){
-        super(bookDto.id, bookDto.title, bookDto.author, bookDto.cover);
+        super(bookDto.id, bookDto.title, bookDto.author, bookDto.cover, bookDto.reviews);
         this.records = records;
     }
 }
