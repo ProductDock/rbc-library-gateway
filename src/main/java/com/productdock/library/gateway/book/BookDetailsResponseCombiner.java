@@ -1,7 +1,5 @@
 package com.productdock.library.gateway.book;
 
-import org.bouncycastle.util.Arrays;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

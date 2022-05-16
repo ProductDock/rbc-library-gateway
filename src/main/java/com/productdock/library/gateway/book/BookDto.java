@@ -16,17 +16,5 @@ public class BookDto {
     public String title;
     public String author;
     public String cover;
-    public List<ReviewDto> reviews;
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class ReviewDto {
-
-        public String userFullName;
-        public Short rating;
-        public List<Recommendation> recommendation;
-        public String comment;
-    }
+    public List<Object> reviews;
 }
