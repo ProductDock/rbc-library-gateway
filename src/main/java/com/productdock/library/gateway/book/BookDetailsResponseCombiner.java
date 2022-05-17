@@ -17,8 +17,13 @@ public class BookDetailsResponseCombiner {
 
     public JsonNode generateBookDetailsDto(Object book, List<Object> rentalRecords, int availableBooksCount) {
         List<Object> records = combineRentalRecordsWithAvailable(rentalRecords, availableBooksCount);
-        var json = new ObjectMapper().valueToTree(book);
-        return extendJsonWithRecords((ObjectNode) json, records);
+        var json = jsonOf(book);
+        extendJsonWithRecords((ObjectNode) json, jsonOf(records));
+        return json;
+    }
+
+    private JsonNode jsonOf(Object book) {
+        return new ObjectMapper().valueToTree(book);
     }
 
     private List<Object> combineRentalRecordsWithAvailable(List<Object> rentalRecords, int availableBooksCount) {
@@ -27,10 +32,10 @@ public class BookDetailsResponseCombiner {
     }
 
     private List<AvailableRentalRecordDto> generateAvailableRecords(int availableBooksCount) {
-        return IntStream.of(availableBooksCount).mapToObj(i -> new AvailableRentalRecordDto()).toList();
+        return IntStream.range(0, availableBooksCount).mapToObj(i -> new AvailableRentalRecordDto()).toList();
     }
 
-    private ObjectNode extendJsonWithRecords(ObjectNode json, List<Object> records) {
-        return json.put(JSON_FIELD_RECORDS, String.valueOf(records));
+    private void extendJsonWithRecords(ObjectNode json, JsonNode records) {
+        json.putIfAbsent(JSON_FIELD_RECORDS, records);
     }
 }

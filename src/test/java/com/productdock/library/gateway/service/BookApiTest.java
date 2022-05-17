@@ -15,7 +15,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.io.IOException;
 
-//import static com.productdock.library.gateway.data.provider.ReviewDtoMother.defaultReviewDto;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockJwt;
@@ -37,7 +36,7 @@ class BookApiTest {
     @BeforeAll
     static void setUp() throws IOException {
         mockBackEnd = new MockWebServer();
-        mockBackEnd.start(8083);
+        mockBackEnd.start(8081);
     }
 
     @AfterAll
@@ -56,13 +55,10 @@ class BookApiTest {
 
     @Test
     @WithMockUser
-    void givenBookId_thenGetBookDetails() throws Exception {
-//        mockBackEnd.enqueue(new MockResponse()
-//                .setBody("{\"id\": \"1\", \"title\": \"Title\", \"author\": \"John Doe\", \"cover\": \"Cover\", " +
-//                        "\"reviews\":[{\"userFullName\":\"John Doe\",\"rating\":5,\"recommendation\":[\"JUNIOR\"],\"comment\":\"Must read!\"}]}")
-//                .addHeader("Content-Type", "application/json"));
+    void givenBookId_thenGetBookDetails() {
         mockBackEnd.enqueue(new MockResponse()
-                .setBody("{\"recommendation\":[\"JUNIOR\", \"SENIOR\"]}")
+                .setBody("{\"id\": \"1\", \"title\": \"Title\", \"author\": \"John Doe\", \"cover\": \"Cover\", " +
+                        "\"reviews\":[{\"userFullName\":\"John Doe\",\"rating\":5,\"recommendation\":[\"JUNIOR\"],\"comment\":\"Must read!\"}]}")
                 .addHeader("Content-Type", "application/json"));
 
         rest.mutateWith(mockJwt()).get().uri("/api/books/" + bookId)
