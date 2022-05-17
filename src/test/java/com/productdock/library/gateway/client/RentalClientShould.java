@@ -1,6 +1,5 @@
 package com.productdock.library.gateway.client;
 
-import com.productdock.library.gateway.book.BookRentalRecordDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,7 +37,7 @@ class RentalClientShould {
         WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);
         given(headerSpec.retrieve()).willReturn(responseSpec);
 
-        given(responseSpec.bodyToMono(new ParameterizedTypeReference<List<BookRentalRecordDto>>() {})).willReturn(Mono.empty());
+        given(responseSpec.bodyToMono(new ParameterizedTypeReference<List<Object>>() {})).willReturn(Mono.empty());
 
         var bookRentalRecordsMono = rentalClient.getBookRentalRecords("12345", "Token");
 

@@ -1,6 +1,5 @@
 package com.productdock.library.gateway.client;
 
-import com.productdock.library.gateway.book.BookDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,7 +34,7 @@ class CatalogClientShould {
         WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);
         given(headerSpec.retrieve()).willReturn(responseSpec);
 
-        given(responseSpec.bodyToMono(BookDto.class)).willReturn(Mono.empty());
+        given(responseSpec.bodyToMono(Object.class)).willReturn(Mono.empty());
 
         var bookMono = catalogClient.getBookData("12345", "Token");
 

@@ -1,6 +1,5 @@
 package com.productdock.library.gateway.client;
 
-import com.productdock.library.gateway.book.BookDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,15 +17,15 @@ public class CatalogClient {
         this.webClient = WebClient.create();
     }
 
-    public Mono<BookDto> getBookData(String bookId, String jwtToken){
+    public Mono<Object> getBookData(String bookId, String jwtToken){
         var catalogBookDetailsUrl = catalogServiceUrl + bookId;
         return webClient
                 .get()
                 .uri(catalogBookDetailsUrl)
                 .header("Authorization", jwtToken)
                 .retrieve()
-                .bodyToMono(BookDto.class)
-                .onErrorReturn(RuntimeException.class,new BookDto());
+                .bodyToMono(Object.class)
+                .onErrorReturn(RuntimeException.class,"{}");
 
     }
 
