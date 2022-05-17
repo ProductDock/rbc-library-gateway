@@ -1,5 +1,6 @@
 package com.productdock.library.gateway.book;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.productdock.library.gateway.client.CatalogClient;
 import com.productdock.library.gateway.client.InventoryClient;
 import com.productdock.library.gateway.client.RentalClient;
@@ -12,7 +13,7 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
                           InventoryClient inventoryClient, BookDetailsResponseCombiner bookDetailsResponseCombiner) {
 
     @SneakyThrows
-    public BookDetailsDto getBookDetails(String bookId, String jwtToken) {
+    public JsonNode getBookDetails(String bookId, String jwtToken) {
         var bookDtoMono = catalogClient.getBookData(bookId, jwtToken);
         var rentalRecordsDtoMono = rentalClient.getBookRentalRecords(bookId, jwtToken);
         var availableBooksCountMono = inventoryClient.getAvailableBookCopiesCount(bookId, jwtToken);

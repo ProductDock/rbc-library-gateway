@@ -37,7 +37,7 @@ class BookApiTest {
     @BeforeAll
     static void setUp() throws IOException {
         mockBackEnd = new MockWebServer();
-        mockBackEnd.start(8081);
+        mockBackEnd.start(8083);
     }
 
     @AfterAll
@@ -57,9 +57,12 @@ class BookApiTest {
     @Test
     @WithMockUser
     void givenBookId_thenGetBookDetails() throws Exception {
+//        mockBackEnd.enqueue(new MockResponse()
+//                .setBody("{\"id\": \"1\", \"title\": \"Title\", \"author\": \"John Doe\", \"cover\": \"Cover\", " +
+//                        "\"reviews\":[{\"userFullName\":\"John Doe\",\"rating\":5,\"recommendation\":[\"JUNIOR\"],\"comment\":\"Must read!\"}]}")
+//                .addHeader("Content-Type", "application/json"));
         mockBackEnd.enqueue(new MockResponse()
-                .setBody("{\"id\": \"1\", \"title\": \"Title\", \"author\": \"John Doe\", \"cover\": \"Cover\", " +
-                        "\"reviews\":[{\"userFullName\":\"John Doe\",\"rating\":5,\"recommendation\":[\"JUNIOR\"],\"comment\":\"Must read!\"}]}")
+                .setBody("{\"recommendation\":[\"JUNIOR\", \"SENIOR\"]}")
                 .addHeader("Content-Type", "application/json"));
 
         rest.mutateWith(mockJwt()).get().uri("/api/books/" + bookId)

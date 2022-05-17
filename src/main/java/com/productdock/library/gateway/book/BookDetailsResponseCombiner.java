@@ -1,26 +1,36 @@
 package com.productdock.library.gateway.book;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static java.util.stream.Stream.concat;
 
 @Component
 public class BookDetailsResponseCombiner {
 
-    public BookDetailsDto generateBookDetailsDto(BookDto book, List<BookRentalRecordDto> rentalRecords, int availableBooksCount) {
-        var availableRecords = generateAvailableRecords(availableBooksCount);
-        var allRecords = concat(rentalRecords.stream(), availableRecords.stream()).toList();
-        return new BookDetailsDto(book, allRecords);
+    private static final String JSON_FIELD_RECORDS = "records";
+
+    public JsonNode generateBookDetailsDto(Object book, List<Object> rentalRecords, int availableBooksCount) {
+        List<Object> records = combineRentalRecordsWithAvailable(rentalRecords, availableBooksCount);
+        var json = new ObjectMapper().valueToTree(book);
+        return extendJsonWithRecords((ObjectNode) json, records);
     }
 
-    private List<BookRentalRecordDto> generateAvailableRecords(int availableBooksCount) {
-        var availableRecords = new ArrayList<BookRentalRecordDto>();
-        for(int i=0;i<availableBooksCount;i++){
-            availableRecords.add(new BookRentalRecordDto("", BookStatus.AVAILABLE));
-        }
-        return availableRecords;
+    private List<Object> combineRentalRecordsWithAvailable(List<Object> rentalRecords, int availableBooksCount) {
+        var availableRecords = generateAvailableRecords(availableBooksCount);
+        return concat(rentalRecords.stream(), availableRecords.stream()).toList();
+    }
+
+    private List<AvailableRentalRecordDto> generateAvailableRecords(int availableBooksCount) {
+        return IntStream.of(availableBooksCount).mapToObj(i -> new AvailableRentalRecordDto()).toList();
+    }
+
+    private ObjectNode extendJsonWithRecords(ObjectNode json, List<Object> records) {
+        return json.put(JSON_FIELD_RECORDS, String.valueOf(records));
     }
 }
