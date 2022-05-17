@@ -12,7 +12,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
+
 import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -25,10 +27,10 @@ class BookServiceShould {
     private static final int AVAILABLE_BOOK_COUNT = 1;
     public static final Object CATALOG_RESPONSE = Mockito.mock(Object.class);
     public static final List<Object> RENTAL_RESPONSE = List.of(mock(Object.class));
-    private static final Mono<Object> BOOK_DTO_MONO = Mono.just(CATALOG_RESPONSE);
-    private static final Mono<List<Object>> RENTAL_RECORDS_DTO_MONO = Mono.just(RENTAL_RESPONSE);
+    private static final Mono<Object> CATALOG_MONO = Mono.just(CATALOG_RESPONSE);
+    private static final Mono<List<Object>> RENTAL_MONO = Mono.just(RENTAL_RESPONSE);
     private static final Mono<Integer> AVAILABLE_BOOK_COUNT_MONO = Mono.just(AVAILABLE_BOOK_COUNT);
-    private static final JsonNode BOOK_DETAILS_DTO_JSON = Mockito.mock(JsonNode.class);
+    private static final JsonNode BOOK_DETAILS_JSON = Mockito.mock(JsonNode.class);
 
     @InjectMocks
     private BookService bookService;
@@ -47,14 +49,14 @@ class BookServiceShould {
 
     @Test
     void generateBookDetailsDto() {
-        given(catalogClient.getBookData(BOOK_ID, JWT_TOKEN)).willReturn(BOOK_DTO_MONO);
-        given(rentalClient.getBookRentalRecords(BOOK_ID, JWT_TOKEN)).willReturn(RENTAL_RECORDS_DTO_MONO);
+        given(catalogClient.getBookData(BOOK_ID, JWT_TOKEN)).willReturn(CATALOG_MONO);
+        given(rentalClient.getBookRentalRecords(BOOK_ID, JWT_TOKEN)).willReturn(RENTAL_MONO);
         given(inventoryClient.getAvailableBookCopiesCount(BOOK_ID, JWT_TOKEN)).willReturn(AVAILABLE_BOOK_COUNT_MONO);
-        given(bookDetailsResponseCombiner.generateBookDetailsDto(CATALOG_RESPONSE, RENTAL_RESPONSE, AVAILABLE_BOOK_COUNT)).willReturn(BOOK_DETAILS_DTO_JSON);
+        given(bookDetailsResponseCombiner.generateBookDetailsDto(CATALOG_RESPONSE, RENTAL_RESPONSE, AVAILABLE_BOOK_COUNT)).willReturn(BOOK_DETAILS_JSON);
 
         var bookDetails = bookService.getBookDetails(BOOK_ID, JWT_TOKEN);
 
-        assertThat(bookDetails).isEqualTo(BOOK_DETAILS_DTO_JSON);
+        assertThat(bookDetails).isEqualTo(BOOK_DETAILS_JSON);
     }
 
 }

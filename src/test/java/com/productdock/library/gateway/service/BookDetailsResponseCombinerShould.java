@@ -18,7 +18,7 @@ class BookDetailsResponseCombinerShould {
     private BookDetailsResponseCombiner bookDetailsResponseCombiner;
 
     @Test
-    void generateBookDetailsDtoWithAvailableRecord_whenAvailableBookCopiesExist(){
+    void generateBookDetailsDtoWithAvailableRecord_whenAvailableBookCopiesExist() {
         var anyDto = new LinkedHashMap<>();
         anyDto.put("property", "value");
         var anyRecord = new LinkedHashMap<>();
@@ -26,7 +26,7 @@ class BookDetailsResponseCombinerShould {
         List<Object> rentalRecordsDto = List.of(anyRecord);
         var availableBookCount = 1;
 
-        var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(anyDto,rentalRecordsDto,availableBookCount);
+        var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(anyDto, rentalRecordsDto, availableBookCount);
 
         assertThat(bookDetails.get("property").asText()).isEqualTo("value");
         assertThat(bookDetails.get("records")).isNotNull();
@@ -37,14 +37,14 @@ class BookDetailsResponseCombinerShould {
     }
 
     @Test
-    void generateBookDetailsDto_whenAvailableBookCopiesDoNotExist(){
+    void generateBookDetailsDto_whenAvailableBookCopiesDoNotExist() {
         var anyDto = new LinkedHashMap<>();
         var anyRecord = new LinkedHashMap<>();
         anyRecord.put("recordProperty", "recordValue");
         List<Object> rentalRecordsDto = List.of(anyRecord);
         var availableBookCount = 0;
 
-        var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(anyDto,rentalRecordsDto,availableBookCount);
+        var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(anyDto, rentalRecordsDto, availableBookCount);
 
         assertThat(bookDetails.get("records")).isNotNull();
         assertThat(bookDetails.get("records").size()).isEqualTo(1);
