@@ -1,6 +1,5 @@
 package com.productdock.library.gateway.client;
 
-import com.productdock.library.gateway.book.AvailableRentalRecordDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
