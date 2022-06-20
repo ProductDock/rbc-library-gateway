@@ -1,5 +1,6 @@
 package com.productdock.library.gateway.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -25,7 +26,7 @@ public class CatalogClient {
                 .header("Authorization", jwtToken)
                 .retrieve()
                 .bodyToMono(Object.class)
-                .onErrorReturn(RuntimeException.class,"{}");
+                .onErrorReturn(RuntimeException.class, JsonNodeFactory.instance.objectNode());
 
     }
 
