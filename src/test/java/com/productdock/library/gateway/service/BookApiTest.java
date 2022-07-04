@@ -36,7 +36,7 @@ class BookApiTest {
     @BeforeAll
     static void setUp() throws IOException {
         mockBackEnd = new MockWebServer();
-        mockBackEnd.start(8081);
+        mockBackEnd.start(8082);
     }
 
     @AfterAll

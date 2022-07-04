@@ -16,7 +16,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@AutoConfigureWireMock(port = 8082)
+@AutoConfigureWireMock(port = 8081)
 @ActiveProfiles("test")
 class SearchRouteTest {
 
