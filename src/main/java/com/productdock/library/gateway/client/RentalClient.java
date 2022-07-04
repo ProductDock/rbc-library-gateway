@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class RentalClient {
 
-    @Value("${rental.service.url}/api/rental/record/")
+    @Value("${rental.service.url}/api/rental/book/")
     private String rentalServiceUrl;
 
     private WebClient webClient;
@@ -22,7 +22,7 @@ public class RentalClient {
     }
 
     public Mono<List<Object>> getBookRentalRecords(String bookId, String jwtToken){
-        var rentalBookRecordsUrl = rentalServiceUrl + bookId;
+        var rentalBookRecordsUrl = rentalServiceUrl + bookId + "/rentals";
         return webClient
                 .get()
                 .uri(rentalBookRecordsUrl)

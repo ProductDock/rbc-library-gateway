@@ -20,11 +20,11 @@ spring:
               basedOnPreviousValue: false
       routes:
         - id: catalog-route
-          uri: ${CATALOG_SERVICE_URL:http://localhost:8081}
+          uri: ${CATALOG_SERVICE_URL:http://localhost:8082}
           predicates:
             - Path=/api/catalog/books/**
         - id: search-route
-          uri: ${SEARCH_SERVICE_URL:http://localhost:8082}
+          uri: ${SEARCH_SERVICE_URL:http://localhost:8081}
           predicates:
             - Path=/api/search/**
         - id: rental-route
@@ -33,7 +33,7 @@ spring:
             - Path=/api/rental/**
 catalog:
   service:
-    url: ${CATALOG_SERVICE_URL:http://localhost:8081}
+    url: ${CATALOG_SERVICE_URL:http://localhost:8082}
 rental:
   service:
     url: ${RENTAL_SERVICE_URL:http://localhost:8083}
