@@ -1,4 +1,16 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:817921738258-cp6qkk9avb03ciibflfltdjdummgqb5p.apps.googleusercontent.com}
+            client-secret: ${GOOGLE_CLIENT_SECRET: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}
+            scope: openid, profile, email
+        provider:
+          google:
+            issuer-uri: accounts.google.com
+
   cloud:
     gateway:
       default-filters:
