@@ -18,17 +18,17 @@ public class SecurityConfig {
     @Value("${cors.allowed.origins}")
     private String corsAllowedOrigins;
 
-    @Bean
-    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        http.csrf().disable()
-                .authorizeExchange()
-                .pathMatchers("/**").authenticated()
-                .anyExchange().authenticated()
-                .and().cors(withDefaults())
-                .oauth2ResourceServer()
-                .jwt();
-        return http.build();
-    }
+//    @Bean
+//    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+//        http.csrf().disable()
+//                .authorizeExchange()
+//                .pathMatchers("/**").authenticated()
+//                .anyExchange().authenticated()
+//                .and().cors(withDefaults())
+//                .oauth2ResourceServer()
+//                .jwt();
+//        return http.build();
+//    }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
