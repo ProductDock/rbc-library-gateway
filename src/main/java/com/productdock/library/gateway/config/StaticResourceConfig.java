@@ -61,6 +61,9 @@ public class StaticResourceConfig implements WebFluxConfigurer {
             if (requestPath == null) return null;
 
             if (isStaticResource(requestPath)) {
+                if (isLandingResource(requestPath)) {
+                    return new ClassPathResource(STATIC_DIR + "/landing/" + requestPath);
+                }
                 return new ClassPathResource(STATIC_DIR + "/" + requestPath);
             }
             else if (isLandingPage(requestPath)) {
@@ -74,6 +77,10 @@ public class StaticResourceConfig implements WebFluxConfigurer {
             return rootStaticFiles.contains(requestPath)
                     || requestPath.startsWith(STATIC_DIR)
                     || containsStaticExtension(requestPath);
+        }
+
+        private boolean isLandingResource(String requestedPath) {
+            return requestedPath.toLowerCase().contains("landing");
         }
 
         private boolean isLandingPage(String requestPath) {

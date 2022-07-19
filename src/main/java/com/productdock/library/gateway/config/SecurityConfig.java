@@ -33,7 +33,7 @@ public class SecurityConfig {
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         return http
                 .csrf().disable()
-                .authorizeExchange().pathMatchers("/", "/landing/*", "/*.svg", "/landing.*").permitAll()
+                .authorizeExchange().pathMatchers("/", "/*landing.*", "/*.svg").permitAll()
                 .anyExchange().authenticated().and()
                 .cors(withDefaults())
                 .oauth2Login()
