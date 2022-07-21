@@ -18,7 +18,7 @@ public class CatalogClient {
         this.webClient = WebClient.create();
     }
 
-    public Mono<Object> getBookData(String bookId, String jwtToken){
+    public Mono<Object> getBookDataById(String bookId, String jwtToken){
         var catalogBookDetailsUrl = catalogServiceUrl + bookId;
         return webClient
                 .get()
@@ -27,7 +27,17 @@ public class CatalogClient {
                 .retrieve()
                 .bodyToMono(Object.class)
                 .onErrorReturn(RuntimeException.class, JsonNodeFactory.instance.objectNode());
+    }
 
+    public Mono<Object> getBookDataByTitleAndAuthor(String title, String author, String jwtToken){
+        var catalogBookDetailsUrl = catalogServiceUrl + "?title=" + title + "&author=" + author;
+        return webClient
+                .get()
+                .uri(catalogBookDetailsUrl)
+                .header("Authorization", jwtToken)
+                .retrieve()
+                .bodyToMono(Object.class)
+                .onErrorReturn(RuntimeException.class, JsonNodeFactory.instance.objectNode());
     }
 
 }

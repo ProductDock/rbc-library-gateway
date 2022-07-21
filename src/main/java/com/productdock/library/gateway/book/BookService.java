@@ -1,6 +1,7 @@
 package com.productdock.library.gateway.book;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.productdock.library.gateway.client.CatalogClient;
 import com.productdock.library.gateway.client.InventoryClient;
 import com.productdock.library.gateway.client.RentalClient;
@@ -13,8 +14,8 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
                           InventoryClient inventoryClient, BookDetailsResponseCombiner bookDetailsResponseCombiner) {
 
     @SneakyThrows
-    public JsonNode getBookDetails(String bookId, String jwtToken) {
-        var bookDtoMono = catalogClient.getBookData(bookId, jwtToken);
+    public JsonNode getBookDetailsById(String bookId, String jwtToken) {
+        var bookDtoMono = catalogClient.getBookDataById(bookId, jwtToken);
         var rentalRecordsDtoMono = rentalClient.getBookRentalRecords(bookId, jwtToken);
         var availableBooksCountMono = inventoryClient.getAvailableBookCopiesCount(bookId, jwtToken);
 
@@ -23,5 +24,29 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
             return Mono.just(book);
         });
         return bookDetailsDtoMono.toFuture().get();
+    }
+
+    @SneakyThrows
+    public JsonNode getBookDetailsByTitleAndAuthor(String title, String author, String jwtToken) {
+        var bookDtoMono = catalogClient.getBookDataByTitleAndAuthor(title, author, jwtToken);
+        String bookId = getIdFromBook(bookDtoMono);
+        var rentalRecordsDtoMono = rentalClient.getBookRentalRecords(bookId, jwtToken);
+        var availableBooksCountMono = inventoryClient.getAvailableBookCopiesCount(bookId, jwtToken);
+
+        var bookDetailsDtoMono = Mono.zip(bookDtoMono, rentalRecordsDtoMono, availableBooksCountMono).flatMap(tuple -> {
+            var book = bookDetailsResponseCombiner.generateBookDetailsDto(tuple.getT1(), tuple.getT2(), tuple.getT3());
+            return Mono.just(book);
+        });
+        return bookDetailsDtoMono.toFuture().get();
+    }
+
+    private String getIdFromBook(Mono<Object> bookDtoMono) {
+        var bookNode = jsonOf(bookDtoMono.block());
+        var bookIdNode = bookNode.get("bookId");
+        return bookIdNode.asText();
+    }
+
+    private JsonNode jsonOf(Object book) {
+        return new ObjectMapper().valueToTree(book);
     }
 }

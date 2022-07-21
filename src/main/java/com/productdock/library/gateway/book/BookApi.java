@@ -10,8 +10,14 @@ import org.springframework.web.bind.annotation.*;
 public record BookApi(BookService bookService) {
 
     @GetMapping("/{bookId}")
-    public JsonNode getBook(@PathVariable("bookId") String bookId, Authentication authentication) {
+    public JsonNode getBookById(@PathVariable("bookId") String bookId, Authentication authentication) {
         var jwtToken = "Bearer " + ((Jwt) authentication.getCredentials()).getTokenValue();
-        return bookService.getBookDetails(bookId, jwtToken);
+        return bookService.getBookDetailsById(bookId, jwtToken);
+    }
+
+    @GetMapping("/title-author")
+    public JsonNode getBookByTitleAndAuthor(@RequestParam String title, @RequestParam String author, Authentication authentication) {
+        var jwtToken = "Bearer " + ((Jwt) authentication.getCredentials()).getTokenValue();
+        return bookService.getBookDetailsByTitleAndAuthor(title, author, jwtToken);
     }
 }

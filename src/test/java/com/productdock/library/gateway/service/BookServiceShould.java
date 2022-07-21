@@ -49,12 +49,12 @@ class BookServiceShould {
 
     @Test
     void generateBookDetailsDto() {
-        given(catalogClient.getBookData(BOOK_ID, JWT_TOKEN)).willReturn(CATALOG_MONO);
+        given(catalogClient.getBookDataById(BOOK_ID, JWT_TOKEN)).willReturn(CATALOG_MONO);
         given(rentalClient.getBookRentalRecords(BOOK_ID, JWT_TOKEN)).willReturn(RENTAL_MONO);
         given(inventoryClient.getAvailableBookCopiesCount(BOOK_ID, JWT_TOKEN)).willReturn(AVAILABLE_BOOK_COUNT_MONO);
         given(bookDetailsResponseCombiner.generateBookDetailsDto(CATALOG_RESPONSE, RENTAL_RESPONSE, AVAILABLE_BOOK_COUNT)).willReturn(BOOK_DETAILS_JSON);
 
-        var bookDetails = bookService.getBookDetails(BOOK_ID, JWT_TOKEN);
+        var bookDetails = bookService.getBookDetailsById(BOOK_ID, JWT_TOKEN);
 
         assertThat(bookDetails).isEqualTo(BOOK_DETAILS_JSON);
     }
