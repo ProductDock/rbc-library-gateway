@@ -9,6 +9,8 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.concurrent.ExecutionException;
+
 @Service
 public record BookService(CatalogClient catalogClient, RentalClient rentalClient,
                           InventoryClient inventoryClient, BookDetailsResponseCombiner bookDetailsResponseCombiner) {
@@ -40,9 +42,9 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
         return bookDetailsDtoMono.toFuture().get();
     }
 
-    private String getIdFromBook(Mono<Object> bookDtoMono) {
-        var bookNode = jsonOf(bookDtoMono.block());
-        var bookIdNode = bookNode.get("bookId");
+    private String getIdFromBook(Mono<Object> bookDtoMono) throws ExecutionException, InterruptedException {
+        var bookNode = jsonOf(bookDtoMono.toFuture().get());
+        var bookIdNode = bookNode.get("id");
         return bookIdNode.asText();
     }
 

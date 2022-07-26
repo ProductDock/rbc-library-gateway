@@ -15,7 +15,7 @@ public record BookApi(BookService bookService) {
         return bookService.getBookDetailsById(bookId, jwtToken);
     }
 
-    @GetMapping("/title-author")
+    @GetMapping
     public JsonNode getBookByTitleAndAuthor(@RequestParam String title, @RequestParam String author, Authentication authentication) {
         var jwtToken = "Bearer " + ((Jwt) authentication.getCredentials()).getTokenValue();
         return bookService.getBookDetailsByTitleAndAuthor(title, author, jwtToken);

@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 @Component
 public class CatalogClient {
 
-    @Value("${catalog.service.url}/api/catalog/books/")
+    @Value("${catalog.service.url}/api/catalog/books")
     private String catalogServiceUrl;
 
     private WebClient webClient;
@@ -19,7 +19,7 @@ public class CatalogClient {
     }
 
     public Mono<Object> getBookDataById(String bookId, String jwtToken){
-        var catalogBookDetailsUrl = catalogServiceUrl + bookId;
+        var catalogBookDetailsUrl = catalogServiceUrl + "/" + bookId;
         return webClient
                 .get()
                 .uri(catalogBookDetailsUrl)
