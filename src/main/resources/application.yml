@@ -10,12 +10,20 @@ spring:
   data:
     rest:
       base-path: /api
+    mongodb:
+      authentication-database: user
+      host: ${mongo.server.url:localhost}
+      port: ${mongo.server.port:28017}
+      username: ${mongo.username:root}
+      password: ${mongo.password:root1}
+      database: user
 
   cloud:
     gateway:
       default-filters:
         - SaveSession
         - RemoveRequestHeader=Cookie
+        - Jwt
         - name: Retry
           args:
             retries: 3
@@ -31,8 +39,6 @@ spring:
           uri: ${CATALOG_SERVICE_URL:http://localhost:8082}
           predicates:
             - Path=/api/catalog/books/**
-          filters:
-            - name: Jwt
         - id: search-route
           uri: ${SEARCH_SERVICE_URL:http://localhost:8081}
           predicates:
@@ -41,8 +47,10 @@ spring:
           uri: ${RENTAL_SERVICE_URL:http://localhost:8083}
           predicates:
             - Path=/api/rental/**
-          filters:
-            - name: Jwt
+        - id: user-profiles-route
+          uri: ${USER_PROFILES_SERVICE_URL:http://localhost:8085}
+          predicates:
+            - Path=/api/user-profiles/**
 
   redis:
     connection-timeout: 30s
@@ -64,3 +72,6 @@ rental:
 inventory:
   service:
     url: ${INVENTORY_SERVICE_URL:http://localhost:8084}
+user-profiles:
+  service:
+    url: ${USER_PROFILES_SERVICE_URL:http://localhost:8085}

@@ -13,8 +13,11 @@ import reactor.core.publisher.Mono;
 public class JwtGatewayFilterFactory extends
         AbstractGatewayFilterFactory<Object> {
 
-    public JwtGatewayFilterFactory() {
+    private TokenExchanger tokenExchanger;
+
+    public JwtGatewayFilterFactory(TokenExchanger tokenExchanger) {
         super(Object.class);
+        this.tokenExchanger = tokenExchanger;
     }
 
     public GatewayFilter apply() {
@@ -26,17 +29,22 @@ public class JwtGatewayFilterFactory extends
         return (exchange, chain) -> {
             Mono<ServerWebExchange> var10000 = exchange.getPrincipal()
                     .filter((principal) -> principal instanceof OAuth2AuthenticationToken).cast(OAuth2AuthenticationToken.class)
-                    .map((authentication) -> withBearerAuth(exchange, authentication))
+                    .flatMap((openId) -> tokenExchanger.exchangeToken(getOpenIdTokenValue(openId)))
+                    .map((jwtToken) -> withBearerAuth(exchange, jwtToken))
                     .defaultIfEmpty(exchange);
             return var10000.flatMap(chain::filter);
         };
     }
 
-    private ServerWebExchange withBearerAuth(ServerWebExchange exchange, OAuth2AuthenticationToken authenticationToken) {
+    private String getOpenIdTokenValue(OAuth2AuthenticationToken authenticationToken) {
         var idToken = ((DefaultOidcUser) authenticationToken.getPrincipal()).getIdToken();
+        return idToken.getTokenValue();
+    }
+
+    private ServerWebExchange withBearerAuth(ServerWebExchange exchange, String jwtToken) {
         return exchange.mutate().request((r) -> {
             r.headers((headers) -> {
-                headers.setBearerAuth(idToken.getTokenValue());
+                headers.setBearerAuth(jwtToken);
             });
         }).build();
     }
