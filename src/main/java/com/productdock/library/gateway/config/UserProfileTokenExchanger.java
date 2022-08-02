@@ -7,18 +7,18 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Component
-public class TokenExchanger {
+public class UserProfileTokenExchanger {
 
     @Value("${user-profiles.service.url}/api/user-profiles/access-token")
     private String accessTokenEndpoint;
 
     private WebClient webClient;
 
-    public TokenExchanger() {
+    public UserProfileTokenExchanger() {
         this.webClient = WebClient.create();
     }
 
-    public Mono<String> exchangeToken(String openIdToken) {
+    public Mono<String> exchangeForUserProfileToken(String openIdToken) {
         return webClient
                 .post()
                 .uri(accessTokenEndpoint)

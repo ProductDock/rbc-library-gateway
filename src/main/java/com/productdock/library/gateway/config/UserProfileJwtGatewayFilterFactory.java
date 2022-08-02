@@ -9,14 +9,14 @@ import org.springframework.web.server.ServerWebExchange;
 
 
 @Component
-public class JwtGatewayFilterFactory extends
+public class UserProfileJwtGatewayFilterFactory extends
         AbstractGatewayFilterFactory<Object> {
 
-    private TokenExchanger tokenExchanger;
+    private UserProfileTokenExchanger userProfileTokenExchanger;
 
-    public JwtGatewayFilterFactory(TokenExchanger tokenExchanger) {
+    public UserProfileJwtGatewayFilterFactory(UserProfileTokenExchanger userProfileTokenExchanger) {
         super(Object.class);
-        this.tokenExchanger = tokenExchanger;
+        this.userProfileTokenExchanger = userProfileTokenExchanger;
     }
 
     public GatewayFilter apply() {
@@ -29,8 +29,8 @@ public class JwtGatewayFilterFactory extends
             var serverWebExchangeMono = exchange.getPrincipal()
                     .filter(principal -> principal instanceof OAuth2AuthenticationToken)
                     .cast(OAuth2AuthenticationToken.class)
-                    .flatMap(openId -> tokenExchanger.exchangeToken(getOpenIdTokenValue(openId)))
-                    .map(jwtToken -> mutateRequestWithJwtToken(exchange, jwtToken))
+                    .flatMap(openId -> userProfileTokenExchanger.exchangeForUserProfileToken(getOpenIdTokenValue(openId)))
+                    .map(userProfileJwt -> mutateRequestWithJwtToken(exchange, userProfileJwt))
                     .defaultIfEmpty(exchange);
             return serverWebExchangeMono.flatMap(chain::filter);
         };
