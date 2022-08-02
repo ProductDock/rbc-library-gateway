@@ -18,11 +18,11 @@ public class TokenExchanger {
         this.webClient = WebClient.create();
     }
 
-    public Mono<String> exchangeToken(String idToken) {
+    public Mono<String> exchangeToken(String openIdToken) {
         return webClient
                 .post()
                 .uri(accessTokenEndpoint)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + idToken)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + openIdToken)
                 .retrieve()
                 .toBodilessEntity()
                 .map(voidResponseEntity -> voidResponseEntity.getHeaders().getFirst(HttpHeaders.AUTHORIZATION))

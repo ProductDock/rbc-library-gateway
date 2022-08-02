@@ -6,7 +6,6 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 
 
 @Component
@@ -28,25 +27,23 @@ public class JwtGatewayFilterFactory extends
     public GatewayFilter apply(Object config) {
         return (exchange, chain) -> {
             var serverWebExchangeMono = exchange.getPrincipal()
-                    .filter((principal) -> principal instanceof OAuth2AuthenticationToken).cast(OAuth2AuthenticationToken.class)
-                    .flatMap((openId) -> tokenExchanger.exchangeToken(getOpenIdTokenValue(openId)))
-                    .map((jwtToken) -> withBearerAuth(exchange, jwtToken))
+                    .filter(principal -> principal instanceof OAuth2AuthenticationToken)
+                    .cast(OAuth2AuthenticationToken.class)
+                    .flatMap(openId -> tokenExchanger.exchangeToken(getOpenIdTokenValue(openId)))
+                    .map(jwtToken -> mutateRequestWithJwtToken(exchange, jwtToken))
                     .defaultIfEmpty(exchange);
             return serverWebExchangeMono.flatMap(chain::filter);
         };
     }
 
-    private String getOpenIdTokenValue(OAuth2AuthenticationToken authenticationToken) {
-        var idToken = ((DefaultOidcUser) authenticationToken.getPrincipal()).getIdToken();
+    private String getOpenIdTokenValue(OAuth2AuthenticationToken openIdToken) {
+        var idToken = ((DefaultOidcUser) openIdToken.getPrincipal()).getIdToken();
         return idToken.getTokenValue();
     }
 
-    private ServerWebExchange withBearerAuth(ServerWebExchange exchange, String jwtToken) {
-        return exchange.mutate().request((r) -> {
-            r.headers((headers) -> {
-                headers.setBearerAuth(jwtToken);
-            });
-        }).build();
+    private ServerWebExchange mutateRequestWithJwtToken(ServerWebExchange exchange, String jwtToken) {
+        return exchange.mutate().request(
+                r -> r.headers((headers) -> headers.setBearerAuth(jwtToken))).build();
     }
 
 }
