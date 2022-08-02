@@ -27,12 +27,12 @@ public class JwtGatewayFilterFactory extends
     @Override
     public GatewayFilter apply(Object config) {
         return (exchange, chain) -> {
-            Mono<ServerWebExchange> var10000 = exchange.getPrincipal()
+            var serverWebExchangeMono = exchange.getPrincipal()
                     .filter((principal) -> principal instanceof OAuth2AuthenticationToken).cast(OAuth2AuthenticationToken.class)
                     .flatMap((openId) -> tokenExchanger.exchangeToken(getOpenIdTokenValue(openId)))
                     .map((jwtToken) -> withBearerAuth(exchange, jwtToken))
                     .defaultIfEmpty(exchange);
-            return var10000.flatMap(chain::filter);
+            return serverWebExchangeMono.flatMap(chain::filter);
         };
     }
 
