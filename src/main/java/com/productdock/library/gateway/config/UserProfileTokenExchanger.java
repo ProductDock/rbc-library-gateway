@@ -9,10 +9,10 @@ import reactor.core.publisher.Mono;
 @Component
 public class UserProfileTokenExchanger {
 
-    @Value("${user-profiles.service.url}/api/user-profiles/access-token")
-    private String accessTokenEndpoint;
+    @Value("${user-profiles.service.url}/api/user-profiles/token")
+    private String userProfilesJwtEndpoint;
 
-    private WebClient webClient;
+    private final WebClient webClient;
 
     public UserProfileTokenExchanger() {
         this.webClient = WebClient.create();
@@ -21,7 +21,7 @@ public class UserProfileTokenExchanger {
     public Mono<String> exchangeForUserProfileToken(String openIdToken) {
         return webClient
                 .post()
-                .uri(accessTokenEndpoint)
+                .uri(userProfilesJwtEndpoint)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + openIdToken)
                 .retrieve()
                 .toBodilessEntity()
