@@ -24,8 +24,7 @@ public class UserProfileTokenExchanger {
                 .uri(userProfilesJwtEndpoint)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + openIdToken)
                 .retrieve()
-                .toBodilessEntity()
-                .map(voidResponseEntity -> voidResponseEntity.getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
+                .bodyToMono(String.class)
                 .onErrorReturn("");
     }
 }
