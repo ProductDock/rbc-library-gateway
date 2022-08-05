@@ -9,12 +9,12 @@ import org.springframework.web.server.ServerWebExchange;
 
 
 @Component
-public class UserProfileJwtGatewayFilterFactory extends
+public class JwtGatewayFilterFactory extends
         AbstractGatewayFilterFactory<Object> {
 
     private UserProfileTokenExchanger userProfileTokenExchanger;
 
-    public UserProfileJwtGatewayFilterFactory(UserProfileTokenExchanger userProfileTokenExchanger) {
+    public JwtGatewayFilterFactory(UserProfileTokenExchanger userProfileTokenExchanger) {
         super(Object.class);
         this.userProfileTokenExchanger = userProfileTokenExchanger;
     }
@@ -41,9 +41,9 @@ public class UserProfileJwtGatewayFilterFactory extends
         return idToken.getTokenValue();
     }
 
-    private ServerWebExchange mutateRequestWithJwtToken(ServerWebExchange exchange, String jwtToken) {
+    private ServerWebExchange mutateRequestWithJwtToken(ServerWebExchange exchange, String userProfileJwt) {
         return exchange.mutate().request(
-                r -> r.headers((headers) -> headers.setBearerAuth(jwtToken))).build();
+                r -> r.headers((headers) -> headers.setBearerAuth(userProfileJwt))).build();
     }
 
 }

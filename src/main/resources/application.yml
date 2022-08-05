@@ -23,7 +23,7 @@ spring:
       default-filters:
         - SaveSession
         - RemoveRequestHeader=Cookie
-        - UserProfileJwt
+        - Jwt
         - name: Retry
           args:
             retries: 3
