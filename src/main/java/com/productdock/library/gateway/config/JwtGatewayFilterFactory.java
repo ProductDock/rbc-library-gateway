@@ -30,7 +30,7 @@ public class JwtGatewayFilterFactory extends
                     .filter(principal -> principal instanceof OAuth2AuthenticationToken)
                     .cast(OAuth2AuthenticationToken.class)
                     .flatMap(openId -> userProfileTokenExchanger.exchangeForUserProfileToken(getOpenIdTokenValue(openId)))
-                    .map(userProfileJwt -> mutateRequestWithJwtToken(exchange, userProfileJwt))
+                    .map(userProfileJwt -> mutateRequestWithUserProfileToken(exchange, userProfileJwt))
                     .defaultIfEmpty(exchange);
             return serverWebExchangeMono.flatMap(chain::filter);
         };
@@ -41,7 +41,7 @@ public class JwtGatewayFilterFactory extends
         return idToken.getTokenValue();
     }
 
-    private ServerWebExchange mutateRequestWithJwtToken(ServerWebExchange exchange, String userProfileJwt) {
+    private ServerWebExchange mutateRequestWithUserProfileToken(ServerWebExchange exchange, String userProfileJwt) {
         return exchange.mutate().request(
                 r -> r.headers((headers) -> headers.setBearerAuth(userProfileJwt))).build();
     }
