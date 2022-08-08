@@ -75,3 +75,7 @@ inventory:
 user-profiles:
   service:
     url: ${USER_PROFILES_SERVICE_URL:http://localhost:8085}
+
+security:
+  front-to-gateway:
+    redirect-uri: http://localhost:3000
