@@ -5,10 +5,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.client.oidc.web.server.logout.OidcClientInitiatedServerLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.HttpStatusServerEntryPoint;
+import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler;
+import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 import org.springframework.web.cors.CorsConfiguration;
@@ -26,39 +31,48 @@ public class SecurityConfig {
     @Value("${cors.allowed.origins}")
     private String corsAllowedOrigins;
 
-    @Autowired
-    private ReactiveClientRegistrationRepository clientRegistrationRepository;
+    @Value("${security.front-to-gateway.redirect-uri}")
+    private String frontRedirectUri;
 
     @Bean
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+        ServerAuthenticationSuccessHandler ss;
         return http
-                .csrf().disable()
-                .authorizeExchange().pathMatchers("/", "/*landing.*", "/*.svg").permitAll()
-                .anyExchange().authenticated().and()
                 .cors(withDefaults())
-                .oauth2Login()
-                .clientRegistrationRepository(clientRegistrationRepository).and()
-                .formLogin().loginPage("/").and()
-                .logout().requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, "/api/logout"))
-                .logoutSuccessHandler(oidcLogoutSuccessHandler()).and().build();
+                .csrf().disable()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .authorizeExchange()
+                    .pathMatchers("/auth/**", "/oauth2/**").permitAll()
+                    .anyExchange().authenticated().and()
+                    .oauth2Login()
+                        .authenticationSuccessHandler(new RedirectServerAuthenticationSuccessHandler(frontRedirectUri)).and()
+                //configure endpoints respond with a 401 instead of redirecting to login, since it can't be shown when invoked from JavaScript
+                .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusServerEntryPoint(HttpStatus.UNAUTHORIZED)))
+                .build();
     }
 
-    private ServerLogoutSuccessHandler oidcLogoutSuccessHandler() {
-        OidcClientInitiatedServerLogoutSuccessHandler oidcLogoutSuccessHandler =
-                new OidcClientInitiatedServerLogoutSuccessHandler(this.clientRegistrationRepository);
-        oidcLogoutSuccessHandler.setLogoutSuccessUrl(URI.create("/"));
-        oidcLogoutSuccessHandler.setPostLogoutRedirectUri("{baseUrl}");
-        return oidcLogoutSuccessHandler;
-    }
+//    private ServerLogoutSuccessHandler oidcLogoutSuccessHandler() {
+//        OidcClientInitiatedServerLogoutSuccessHandler oidcLogoutSuccessHandler =
+//                new OidcClientInitiatedServerLogoutSuccessHandler(this.clientRegistrationRepository);
+//        oidcLogoutSuccessHandler.setLogoutSuccessUrl(URI.create("/"));
+//        oidcLogoutSuccessHandler.setPostLogoutRedirectUri("{baseUrl}");
+//        return oidcLogoutSuccessHandler;
+//    }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
         configuration.addAllowedOrigin(corsAllowedOrigins);
+        allowInvocationWithSessionCookie(configuration);
         configuration.setAllowedMethods(asList("GET", "POST", "OPTIONS", "PUT", "PATCH", "HEAD", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    private void allowInvocationWithSessionCookie(CorsConfiguration configuration) {
+        configuration.setAllowCredentials(true);
     }
 }
