@@ -31,19 +31,20 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
     @SneakyThrows
     public JsonNode getBookDetailsByTitleAndAuthor(String title, String author, String jwtToken) {
         var bookDtoMono = catalogClient.getBookDataByTitleAndAuthor(title, author, jwtToken);
-        String bookId = getIdFromBook(bookDtoMono);
+        var bookDetails = bookDtoMono.toFuture().get();
+        String bookId = getIdFromBook(bookDetails);
         var rentalRecordsDtoMono = rentalClient.getBookRentalRecords(bookId, jwtToken);
         var availableBooksCountMono = inventoryClient.getAvailableBookCopiesCount(bookId, jwtToken);
 
-        var bookDetailsDtoMono = Mono.zip(bookDtoMono, rentalRecordsDtoMono, availableBooksCountMono).flatMap(tuple -> {
-            var book = bookDetailsResponseCombiner.generateBookDetailsDto(tuple.getT1(), tuple.getT2(), tuple.getT3());
+        var bookDetailsDtoMono = Mono.zip(rentalRecordsDtoMono, availableBooksCountMono).flatMap(tuple -> {
+            var book = bookDetailsResponseCombiner.generateBookDetailsDto(bookDetails, tuple.getT1(), tuple.getT2());
             return Mono.just(book);
         });
         return bookDetailsDtoMono.toFuture().get();
     }
 
-    private String getIdFromBook(Mono<Object> bookDtoMono) throws ExecutionException, InterruptedException {
-        var bookNode = jsonOf(bookDtoMono.toFuture().get());
+    private String getIdFromBook(Object bookDetails) {
+        var bookNode = jsonOf(bookDetails);
         var bookIdNode = bookNode.get("id");
         return bookIdNode.asText();
     }
