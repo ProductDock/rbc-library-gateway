@@ -7,16 +7,6 @@ spring:
             client-id: ${GOOGLE_CLIENT_ID:817921738258-cp6qkk9avb03ciibflfltdjdummgqb5p.apps.googleusercontent.com}
             client-secret: ${GOOGLE_CLIENT_SECRET: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}
             scope: openid, email, profile
-  data:
-    rest:
-      base-path: /api
-    mongodb:
-      authentication-database: user
-      host: ${mongo.server.url:localhost}
-      port: ${mongo.server.port:28017}
-      username: ${mongo.username:root}
-      password: ${mongo.password:root1}
-      database: user
 
   cloud:
     gateway:

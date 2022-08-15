@@ -32,7 +32,7 @@ class RentalClientShould {
 
         WebClient.RequestHeadersSpec headerSpec = mock(WebClient.RequestHeadersSpec.class);
         given(uriSpec.uri(contains("12345"))).willReturn(headerSpec);
-        given(headerSpec.header("Authorization", "Token")).willReturn(headerSpec);
+        given(headerSpec.header("Authorization", "Bearer Token")).willReturn(headerSpec);
 
         WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);
         given(headerSpec.retrieve()).willReturn(responseSpec);
