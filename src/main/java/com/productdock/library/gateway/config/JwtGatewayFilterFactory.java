@@ -27,7 +27,7 @@ public class JwtGatewayFilterFactory extends
     public GatewayFilter apply(Object config) {
         return (exchange, chain) -> {
             var serverWebExchangeMono = exchange.getPrincipal()
-                    .filter(principal -> principal instanceof OAuth2AuthenticationToken)
+                    .filter(OAuth2AuthenticationToken.class::isInstance)
                     .cast(OAuth2AuthenticationToken.class)
                     .flatMap(openId -> userProfileTokenExchanger.exchangeForUserProfileToken(getOpenIdTokenValue(openId)))
                     .map(userProfileJwt -> mutateRequestWithUserProfileToken(exchange, userProfileJwt))
@@ -43,7 +43,7 @@ public class JwtGatewayFilterFactory extends
 
     private ServerWebExchange mutateRequestWithUserProfileToken(ServerWebExchange exchange, String userProfileJwt) {
         return exchange.mutate().request(
-                r -> r.headers((headers) -> headers.setBearerAuth(userProfileJwt))).build();
+                r -> r.headers(headers -> headers.setBearerAuth(userProfileJwt))).build();
     }
 
 }
