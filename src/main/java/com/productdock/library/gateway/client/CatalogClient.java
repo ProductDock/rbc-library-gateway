@@ -2,6 +2,7 @@ package com.productdock.library.gateway.client;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -14,20 +15,19 @@ public class CatalogClient {
 
     private WebClient webClient;
 
-    public CatalogClient(){
+    public CatalogClient() {
         this.webClient = WebClient.create();
     }
 
-    public Mono<Object> getBookData(String bookId, String jwtToken){
+    public Mono<Object> getBookData(String bookId, String jwtToken) {
         var catalogBookDetailsUrl = catalogServiceUrl + bookId;
+
         return webClient
                 .get()
                 .uri(catalogBookDetailsUrl)
-                .header("Authorization", jwtToken)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                 .retrieve()
                 .bodyToMono(Object.class)
                 .onErrorReturn(RuntimeException.class, JsonNodeFactory.instance.objectNode());
-
     }
-
 }

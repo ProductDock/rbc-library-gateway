@@ -1,7 +1,8 @@
 package com.productdock.library.gateway.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.productdock.library.gateway.book.*;
+import com.productdock.library.gateway.book.BookDetailsResponseCombiner;
+import com.productdock.library.gateway.book.BookService;
 import com.productdock.library.gateway.client.CatalogClient;
 import com.productdock.library.gateway.client.InventoryClient;
 import com.productdock.library.gateway.client.RentalClient;

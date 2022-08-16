@@ -30,3 +30,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+src/main/resources/static/*
+!src/main/resources/static/landing
