@@ -64,7 +64,6 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader(CorsConfiguration.ALL);
         configuration.addAllowedOrigin(corsAllowedOrigins);
-        configuration.addAllowedOrigin("http://localhost:8080");
         allowInvocationWithSessionCookie(configuration);
         configuration.setAllowedMethods(asList("GET", "POST", "OPTIONS", "PUT", "PATCH", "HEAD", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
