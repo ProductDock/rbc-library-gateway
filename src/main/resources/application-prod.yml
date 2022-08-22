@@ -1,13 +1,7 @@
-spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: ${GOOGLE_CLIENT_ID:817921738258-r995r4jocaftcdiauvj3hv6etl6sbcn6.apps.googleusercontent.com}
-            client-secret: ${GOOGLE_CLIENT_SECRET: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}
-            scope: openid, email, profile
-
 cors:
   allowed:
     origins: http://library.productdock.rs
+
+security:
+  front-to-gateway:
+    redirect-uri: http://library.productdock.rs
