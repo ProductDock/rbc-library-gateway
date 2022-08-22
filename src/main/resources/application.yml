@@ -4,8 +4,8 @@ spring:
       client:
         registration:
           google:
-            client-id: ${GOOGLE_CLIENT_ID:817921738258-cp6qkk9avb03ciibflfltdjdummgqb5p.apps.googleusercontent.com}
-            client-secret: ${GOOGLE_CLIENT_SECRET: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}
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
             scope: openid, email, profile
 
   cloud:
@@ -44,7 +44,7 @@ spring:
 
   redis:
     connection-timeout: 30s
-    host: localhost
+    host: ${REDIS_HOSTNAME:localhost}
     port: 6379
     timeout: 5s
   session:
@@ -65,7 +65,3 @@ inventory:
 user-profiles:
   service:
     url: ${USER_PROFILES_SERVICE_URL:http://localhost:8085}
-
-security:
-  front-to-gateway:
-    redirect-uri: http://localhost:3000
