@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 @Component
 public class InventoryClient {
 
-    @Value("${inventory.service.url}/api/inventory/books/")
+    @Value("${inventory.service.url}/api/inventory/book/")
     private String inventoryServiceUrl;
 
     private WebClient webClient;
