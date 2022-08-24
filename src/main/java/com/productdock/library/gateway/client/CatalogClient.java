@@ -5,7 +5,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Mono;
+
+import java.net.URI;
 
 @Component
 public class CatalogClient {
@@ -33,10 +36,14 @@ public class CatalogClient {
     }
 
     public Mono<Object> getBookDataByTitleAndAuthor(String title, String author, String jwtToken){
-        var catalogBookDetailsUrl = catalogServiceUrl + "?title=" + title + "&author=" + author;
+        var uri = new DefaultUriBuilderFactory(catalogServiceUrl)
+                .builder()
+                .queryParam("title", title)
+                .queryParam("author", author)
+                .build();
         return webClient
                 .get()
-                .uri(catalogBookDetailsUrl)
+                .uri(uri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                 .retrieve()
                 .bodyToMono(Object.class)
