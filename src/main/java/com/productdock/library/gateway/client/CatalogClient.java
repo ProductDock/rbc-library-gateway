@@ -8,8 +8,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
-
 @Component
 public class CatalogClient {
 
