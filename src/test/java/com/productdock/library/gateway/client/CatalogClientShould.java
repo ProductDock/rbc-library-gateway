@@ -36,7 +36,7 @@ class CatalogClientShould {
 
         given(responseSpec.bodyToMono(Object.class)).willReturn(Mono.empty());
 
-        var bookMono = catalogClient.getBookDataById("12345", "Token");
+        var bookMono = catalogClient.getBookData("12345", "Token");
 
         StepVerifier.create(bookMono).verifyComplete();
     }

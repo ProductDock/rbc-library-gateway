@@ -80,11 +80,25 @@ class BookApiTest {
     @Test
     @WithMockUser
     void givenTitleAndAuthor_thenGetBookDetails() {
+        mockUserProfilesBackEnd.enqueue(new MockResponse().setBody("id-token"));
         mockCatalogBackEnd.enqueue(new MockResponse()
                 .setBody("{\"id\": \"1\", \"title\": \"Title\", \"author\": \"John Doe\", \"cover\": \"Cover\", " +
                         "\"reviews\":[{\"userFullName\":\"John Doe\",\"rating\":5,\"recommendation\":[\"JUNIOR\"],\"comment\":\"Must read!\"}]}")
                 .setHeader("Content-Type", "application/json"));
 
-     //   rest.mutateWith(mockJwt()).get().uri("/api/books?title=" + TITLE + "&author=" + AUTHOR)
+        rest.mutateWith(mockOidcLogin()).get().uri("/api/books?title=" + TITLE + "&author=" + AUTHOR)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.id").isEqualTo("1")
+                .jsonPath("$.title").isEqualTo("Title")
+                .jsonPath("$.author").isEqualTo("John Doe")
+                .jsonPath("$.cover").isEqualTo("Cover")
+                .jsonPath("$.reviews[0].userFullName").isEqualTo("John Doe")
+                .jsonPath("$.reviews[0].rating").isEqualTo(5)
+                .jsonPath("$.reviews[0].recommendation[0]").isEqualTo("JUNIOR")
+                .jsonPath("$.reviews[0].recommendation").value(hasSize(1))
+                .jsonPath("$.reviews[0].comment").isEqualTo("Must read!")
+                .jsonPath("$.records").value(empty());
     }
 }

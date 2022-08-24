@@ -37,7 +37,7 @@ public class CatalogClient {
         return webClient
                 .get()
                 .uri(catalogBookDetailsUrl)
-                .header("Authorization", jwtToken)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                 .retrieve()
                 .bodyToMono(Object.class)
                 .onErrorReturn(RuntimeException.class, JsonNodeFactory.instance.objectNode());

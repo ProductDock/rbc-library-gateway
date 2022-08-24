@@ -17,7 +17,7 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
 
     @SneakyThrows
     public JsonNode getBookDetailsById(String bookId, String jwtToken) {
-        var bookDtoMono = catalogClient.getBookDataById(bookId, jwtToken);
+        var bookDtoMono = catalogClient.getBookData(bookId, jwtToken);
         var rentalRecordsDtoMono = rentalClient.getBookRentalRecords(bookId, jwtToken);
         var availableBooksCountMono = inventoryClient.getAvailableBookCopiesCount(bookId, jwtToken);
 

@@ -12,14 +12,6 @@ import org.springframework.web.bind.annotation.*;
 public record BookApi(BookService bookService,
                       UserProfileTokenExchanger userProfilesClient) {
 
-
-
-//    @GetMapping
-//    public JsonNode getBookByTitleAndAuthor(@RequestParam String title, @RequestParam String author, Authentication authentication) {
-//        var jwtToken = "Bearer " + ((Jwt) authentication.getCredentials()).getTokenValue();
-//        return bookService.getBookDetailsByTitleAndAuthor(title, author, jwtToken);
-//    }
-
     @SneakyThrows
     @GetMapping("/{bookId}")
     public JsonNode getBook(@PathVariable("bookId") String bookId,
@@ -28,5 +20,15 @@ public record BookApi(BookService bookService,
         var exchangedJwtToken = userProfilesClient.exchangeForUserProfileToken(user.getIdToken().getTokenValue()).toFuture().get();
 
         return bookService.getBookDetailsById(bookId, exchangedJwtToken);
+    }
+
+    @SneakyThrows
+    @GetMapping
+    public JsonNode getBookByTitleAndAuthor(@RequestParam String title, @RequestParam String author,
+                                            OAuth2AuthenticationToken authenticationToken) {
+        var user = (DefaultOidcUser) authenticationToken.getPrincipal();
+        var exchangedJwtToken = userProfilesClient.exchangeForUserProfileToken(user.getIdToken().getTokenValue()).toFuture().get();
+
+        return bookService.getBookDetailsByTitleAndAuthor(title, author, exchangedJwtToken);
     }
 }
