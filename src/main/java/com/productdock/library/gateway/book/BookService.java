@@ -9,8 +9,6 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.concurrent.ExecutionException;
-
 @Service
 public record BookService(CatalogClient catalogClient, RentalClient rentalClient,
                           InventoryClient inventoryClient, BookDetailsResponseCombiner bookDetailsResponseCombiner) {
