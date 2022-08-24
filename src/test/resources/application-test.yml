@@ -8,3 +8,7 @@ spring:
 cors:
   allowed:
     origins: http://localhost:3000
+
+security:
+  front-to-gateway:
+    redirect-uri: http://localhost:3000

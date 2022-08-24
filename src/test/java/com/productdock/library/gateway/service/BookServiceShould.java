@@ -1,7 +1,8 @@
 package com.productdock.library.gateway.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.productdock.library.gateway.book.*;
+import com.productdock.library.gateway.book.BookDetailsResponseCombiner;
+import com.productdock.library.gateway.book.BookService;
 import com.productdock.library.gateway.client.CatalogClient;
 import com.productdock.library.gateway.client.InventoryClient;
 import com.productdock.library.gateway.client.RentalClient;
@@ -49,7 +50,7 @@ class BookServiceShould {
 
     @Test
     void generateBookDetailsDto() {
-        given(catalogClient.getBookDataById(BOOK_ID, JWT_TOKEN)).willReturn(CATALOG_MONO);
+        given(catalogClient.getBookData(BOOK_ID, JWT_TOKEN)).willReturn(CATALOG_MONO);
         given(rentalClient.getBookRentalRecords(BOOK_ID, JWT_TOKEN)).willReturn(RENTAL_MONO);
         given(inventoryClient.getAvailableBookCopiesCount(BOOK_ID, JWT_TOKEN)).willReturn(AVAILABLE_BOOK_COUNT_MONO);
         given(bookDetailsResponseCombiner.generateBookDetailsDto(CATALOG_RESPONSE, RENTAL_RESPONSE, AVAILABLE_BOOK_COUNT)).willReturn(BOOK_DETAILS_JSON);

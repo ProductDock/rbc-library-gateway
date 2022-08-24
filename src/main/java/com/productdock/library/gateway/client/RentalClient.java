@@ -2,6 +2,7 @@ package com.productdock.library.gateway.client;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -23,10 +24,11 @@ public class RentalClient {
 
     public Mono<List<Object>> getBookRentalRecords(String bookId, String jwtToken){
         var rentalBookRecordsUrl = rentalServiceUrl + bookId + "/rentals";
+
         return webClient
                 .get()
                 .uri(rentalBookRecordsUrl)
-                .header("Authorization", jwtToken)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<Object>>() {})
                 .onErrorReturn(RuntimeException.class, new ArrayList<>());
