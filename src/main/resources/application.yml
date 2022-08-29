@@ -42,6 +42,18 @@ spring:
           predicates:
             - Path=/api/user-profiles/**
 
+  data:
+    mongodb:
+      authentication-database: sessions
+      host: ${mongo.server.url:localhost}
+      port: ${mongo.server.port:28017}
+      username: ${mongo.username:root}
+      password: ${mongo.password:root1}
+      database: sessions
+  session:
+    store-type: mongodb
+    timeout: 10m
+
 catalog:
   service:
     url: ${CATALOG_SERVICE_URL:http://localhost:8082}
