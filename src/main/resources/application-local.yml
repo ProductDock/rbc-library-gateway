@@ -1,7 +1,7 @@
 cors:
   allowed:
-    origins: http://localhost:3000
+    origins: ${client.app.url:http://localhost:3000}
 
 security:
   front-to-gateway:
-    redirect-uri: http://localhost:3000
+    redirect-uri: ${client.app.url:http://localhost:3000}
