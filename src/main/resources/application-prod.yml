@@ -1,7 +1,0 @@
-cors:
-  allowed:
-    origins: http://library.productdock.rs
-
-security:
-  front-to-gateway:
-    redirect-uri: http://library.productdock.rs
