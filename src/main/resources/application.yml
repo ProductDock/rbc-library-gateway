@@ -26,29 +26,29 @@ spring:
               basedOnPreviousValue: false
       routes:
         - id: catalog-route
-          uri: ${CATALOG_SERVICE_URL:http://localhost:8082}
+          uri: ${CATALOG_SERVICE_URL}
           predicates:
             - Path=/api/catalog/books/**
         - id: search-route
-          uri: ${SEARCH_SERVICE_URL:http://localhost:8081}
+          uri: ${SEARCH_SERVICE_URL}
           predicates:
             - Path=/api/search/**
         - id: rental-route
-          uri: ${RENTAL_SERVICE_URL:http://localhost:8083}
+          uri: ${RENTAL_SERVICE_URL}
           predicates:
             - Path=/api/rental/**
         - id: user-profiles-route
-          uri: ${USER_PROFILES_SERVICE_URL:http://localhost:8085}
+          uri: ${USER_PROFILES_SERVICE_URL}
           predicates:
             - Path=/api/user-profiles/**
 
   data:
     mongodb:
       authentication-database: sessions
-      host: ${mongo.server.url:localhost}
-      port: ${mongo.server.port:28017}
-      username: ${mongo.username:root}
-      password: ${mongo.password:root1}
+      host: ${MONGO_SERVER_URL}
+      port: ${MONGO_SERVER_PORT}
+      username: ${MONGO_USERNAME}
+      password: ${MONGO_PASSWORD}
       database: sessions
   session:
     store-type: mongodb
@@ -56,13 +56,21 @@ spring:
 
 catalog:
   service:
-    url: ${CATALOG_SERVICE_URL:http://localhost:8082}
+    url: ${CATALOG_SERVICE_URL}
 rental:
   service:
-    url: ${RENTAL_SERVICE_URL:http://localhost:8083}
+    url: ${RENTAL_SERVICE_URL}
 inventory:
   service:
-    url: ${INVENTORY_SERVICE_URL:http://localhost:8084}
+    url: ${INVENTORY_SERVICE_URL}
 user-profiles:
   service:
-    url: ${USER_PROFILES_SERVICE_URL:http://localhost:8085}
+    url: ${USER_PROFILES_SERVICE_URL}
+
+cors:
+  allowed:
+    origins: ${FRONTEND_URL}
+
+security:
+  front-to-gateway:
+    redirect-uri: ${FRONTEND_URL}
