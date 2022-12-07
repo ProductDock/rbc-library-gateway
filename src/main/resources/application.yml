@@ -72,5 +72,6 @@ cors:
   allowed:
     origins: ${FRONTEND_URL}
 
+security:
   front-to-gateway:
     redirect-uri: ${FRONTEND_URL}
