@@ -7,6 +7,7 @@ spring:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope: openid, email, profile
+    basic.enabled: false
 
   cloud:
     gateway:
@@ -71,6 +72,5 @@ cors:
   allowed:
     origins: ${FRONTEND_URL}
 
-security:
   front-to-gateway:
     redirect-uri: ${FRONTEND_URL}
