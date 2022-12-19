@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeExchange()
-                    .pathMatchers("/auth/**", "/oauth2/**").permitAll()
+                    .pathMatchers("/auth/**", "/oauth2/**", "/actuator/**").permitAll()
                     .anyExchange().authenticated().and()
                     .oauth2Login()
                         .authenticationSuccessHandler(new RedirectServerAuthenticationSuccessHandler(frontRedirectUri)).and()
