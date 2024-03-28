@@ -1,5 +1,6 @@
 package com.productdock.library.gateway.client;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -8,8 +9,8 @@ import reactor.core.publisher.Mono;
 @Component
 public class InventoryClient {
 
-    private static final String inventoryServiceUrl = "${inventory.service.url}/api/inventory/book/";
-    private static final String subscriptionServiceUrl = "${inventory.service.url}/api/inventory/subscriptions/";
+    @Value("${inventory.service.url}")
+    private String inventoryServiceUrl;
 
     private WebClient webClient;
 
@@ -18,7 +19,7 @@ public class InventoryClient {
     }
 
     public Mono<Integer> getAvailableBookCopiesCount(String bookId, String jwtToken) {
-        var inventoryBookUrl = inventoryServiceUrl + bookId;
+        var inventoryBookUrl = inventoryServiceUrl + "/api/inventory/book/" + bookId;
 
         return webClient
                 .get()
@@ -30,7 +31,7 @@ public class InventoryClient {
     }
 
     public Mono<Boolean> getBookSubscription(String bookId, String jwtToken) {
-        var subscriptionUrl = subscriptionServiceUrl + bookId;
+        var subscriptionUrl = inventoryServiceUrl + "/api/inventory/subscriptions/" + bookId;
 
         return webClient
                 .get()
