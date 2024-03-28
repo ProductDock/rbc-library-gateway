@@ -1,6 +1,5 @@
 package com.productdock.library.gateway.client;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -9,11 +8,8 @@ import reactor.core.publisher.Mono;
 @Component
 public class InventoryClient {
 
-    @Value("${inventory.service.url}/api/inventory/book/")
-    private String inventoryServiceUrl;
-
-    @Value("${inventory.service.url}/api/inventory/subscriptions/")
-    private String subscriptionServiceUrl;
+    private static final String inventoryServiceUrl = "${inventory.service.url}/api/inventory/book/";
+    private static final String subscriptionServiceUrl = "${inventory.service.url}/api/inventory/subscriptions/";
 
     private WebClient webClient;
 
