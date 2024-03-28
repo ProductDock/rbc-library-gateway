@@ -12,13 +12,16 @@ public class InventoryClient {
     @Value("${inventory.service.url}/api/inventory/book/")
     private String inventoryServiceUrl;
 
+    @Value("${inventory.service.url}/api/inventory/subscriptions/")
+    private String subscriptionServiceUrl;
+
     private WebClient webClient;
 
-    public InventoryClient(){
+    public InventoryClient() {
         this.webClient = WebClient.create();
     }
 
-    public Mono<Integer> getAvailableBookCopiesCount(String bookId, String jwtToken){
+    public Mono<Integer> getAvailableBookCopiesCount(String bookId, String jwtToken) {
         var inventoryBookUrl = inventoryServiceUrl + bookId;
 
         return webClient
@@ -27,7 +30,19 @@ public class InventoryClient {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                 .retrieve()
                 .bodyToMono(Integer.class)
-                .onErrorReturn(RuntimeException.class,0);
+                .onErrorReturn(RuntimeException.class, 0);
+    }
+
+    public Mono<Boolean> getBookSubscription(String bookId, String jwtToken) {
+        var subscriptionUrl = subscriptionServiceUrl + bookId;
+
+        return webClient
+                .get()
+                .uri(subscriptionUrl)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                .retrieve()
+                .bodyToMono(Boolean.class)
+                .onErrorReturn(RuntimeException.class, false);
     }
 
 }
