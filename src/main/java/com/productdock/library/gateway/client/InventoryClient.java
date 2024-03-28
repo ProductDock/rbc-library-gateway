@@ -9,17 +9,17 @@ import reactor.core.publisher.Mono;
 @Component
 public class InventoryClient {
 
-    @Value("${inventory.service.url}/api/inventory/book/")
+    @Value("${inventory.service.url}")
     private String inventoryServiceUrl;
 
     private WebClient webClient;
 
-    public InventoryClient(){
+    public InventoryClient() {
         this.webClient = WebClient.create();
     }
 
-    public Mono<Integer> getAvailableBookCopiesCount(String bookId, String jwtToken){
-        var inventoryBookUrl = inventoryServiceUrl + bookId;
+    public Mono<Integer> getAvailableBookCopiesCount(String bookId, String jwtToken) {
+        var inventoryBookUrl = inventoryServiceUrl + "/api/inventory/book/" + bookId;
 
         return webClient
                 .get()
@@ -27,7 +27,19 @@ public class InventoryClient {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                 .retrieve()
                 .bodyToMono(Integer.class)
-                .onErrorReturn(RuntimeException.class,0);
+                .onErrorReturn(RuntimeException.class, 0);
+    }
+
+    public Mono<Boolean> getBookSubscription(String bookId, String jwtToken) {
+        var subscriptionUrl = inventoryServiceUrl + "/api/inventory/subscriptions/" + bookId;
+
+        return webClient
+                .get()
+                .uri(subscriptionUrl)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                .retrieve()
+                .bodyToMono(Boolean.class)
+                .onErrorReturn(RuntimeException.class, false);
     }
 
 }

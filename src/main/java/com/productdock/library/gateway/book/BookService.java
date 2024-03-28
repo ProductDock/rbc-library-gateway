@@ -18,9 +18,10 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
         var bookDtoMono = catalogClient.getBookData(bookId, jwtToken);
         var rentalRecordsDtoMono = rentalClient.getBookRentalRecords(bookId, jwtToken);
         var availableBooksCountMono = inventoryClient.getAvailableBookCopiesCount(bookId, jwtToken);
+        var bookSubscriptionMono = inventoryClient.getBookSubscription(bookId, jwtToken);
 
-        var bookDetailsDtoMono = Mono.zip(bookDtoMono, rentalRecordsDtoMono, availableBooksCountMono).flatMap(tuple -> {
-            var book = bookDetailsResponseCombiner.generateBookDetailsDto(tuple.getT1(), tuple.getT2(), tuple.getT3());
+        var bookDetailsDtoMono = Mono.zip(bookDtoMono, rentalRecordsDtoMono, availableBooksCountMono, bookSubscriptionMono).flatMap(tuple -> {
+            var book = bookDetailsResponseCombiner.generateBookDetailsDto(tuple.getT1(), tuple.getT2(), tuple.getT3(), tuple.getT4());
             return Mono.just(book);
         });
         return bookDetailsDtoMono.toFuture().get();
@@ -33,9 +34,10 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
         String bookId = getIdFromBook(bookDetails);
         var rentalRecordsDtoMono = rentalClient.getBookRentalRecords(bookId, jwtToken);
         var availableBooksCountMono = inventoryClient.getAvailableBookCopiesCount(bookId, jwtToken);
+        var bookSubscriptionMono = inventoryClient.getBookSubscription(bookId, jwtToken);
 
-        var bookDetailsDtoMono = Mono.zip(rentalRecordsDtoMono, availableBooksCountMono).flatMap(tuple -> {
-            var book = bookDetailsResponseCombiner.generateBookDetailsDto(bookDetails, tuple.getT1(), tuple.getT2());
+        var bookDetailsDtoMono = Mono.zip(rentalRecordsDtoMono, availableBooksCountMono, bookSubscriptionMono).flatMap(tuple -> {
+            var book = bookDetailsResponseCombiner.generateBookDetailsDto(bookDetails, tuple.getT1(), tuple.getT2(), tuple.getT3());
             return Mono.just(book);
         });
         return bookDetailsDtoMono.toFuture().get();

@@ -25,8 +25,9 @@ class BookDetailsResponseCombinerShould {
         anyRecord.put("recordProperty", "recordValue");
         List<Object> rentalRecordsDto = List.of(anyRecord);
         var availableBookCount = 1;
+        var bookSubscription = false;
 
-        var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(anyDto, rentalRecordsDto, availableBookCount);
+        var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(anyDto, rentalRecordsDto, availableBookCount, bookSubscription);
 
         assertThat(bookDetails.get("property").asText()).isEqualTo("value");
         assertThat(bookDetails.get("records")).isNotNull();
@@ -43,8 +44,9 @@ class BookDetailsResponseCombinerShould {
         anyRecord.put("recordProperty", "recordValue");
         List<Object> rentalRecordsDto = List.of(anyRecord);
         var availableBookCount = 0;
+        var bookSubscription = false;
 
-        var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(anyDto, rentalRecordsDto, availableBookCount);
+        var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(anyDto, rentalRecordsDto, availableBookCount, bookSubscription);
 
         assertThat(bookDetails.get("records")).isNotNull();
         assertThat(bookDetails.get("records").size()).isEqualTo(1);

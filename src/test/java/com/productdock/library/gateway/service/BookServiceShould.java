@@ -30,11 +30,14 @@ class BookServiceShould {
     private static final String BOOK_AUTHOR = "::author::";
     private static final String JWT_TOKEN = "";
     private static final int AVAILABLE_BOOK_COUNT = 1;
+    private static final boolean BOOK_SUBSCRIPTION = false;
     private static final Object CATALOG_RESPONSE = Mockito.mock(Object.class);
     private static final List<Object> RENTAL_RESPONSE = List.of(mock(Object.class));
     private static final Mono<Object> CATALOG_MONO = Mono.just(CATALOG_RESPONSE);
     private static final Mono<List<Object>> RENTAL_MONO = Mono.just(RENTAL_RESPONSE);
     private static final Mono<Integer> AVAILABLE_BOOK_COUNT_MONO = Mono.just(AVAILABLE_BOOK_COUNT);
+
+    private static final Mono<Boolean> BOOK_SUBSCRIPTION_MONO = Mono.just(BOOK_SUBSCRIPTION);
     private static final JsonNode BOOK_DETAILS_JSON = Mockito.mock(JsonNode.class);
 
     @InjectMocks
@@ -57,7 +60,8 @@ class BookServiceShould {
         given(catalogClient.getBookData(BOOK_ID, JWT_TOKEN)).willReturn(CATALOG_MONO);
         given(rentalClient.getBookRentalRecords(BOOK_ID, JWT_TOKEN)).willReturn(RENTAL_MONO);
         given(inventoryClient.getAvailableBookCopiesCount(BOOK_ID, JWT_TOKEN)).willReturn(AVAILABLE_BOOK_COUNT_MONO);
-        given(bookDetailsResponseCombiner.generateBookDetailsDto(CATALOG_RESPONSE, RENTAL_RESPONSE, AVAILABLE_BOOK_COUNT)).willReturn(BOOK_DETAILS_JSON);
+        given(inventoryClient.getBookSubscription(BOOK_ID, JWT_TOKEN)).willReturn(BOOK_SUBSCRIPTION_MONO);
+        given(bookDetailsResponseCombiner.generateBookDetailsDto(CATALOG_RESPONSE, RENTAL_RESPONSE, AVAILABLE_BOOK_COUNT, BOOK_SUBSCRIPTION)).willReturn(BOOK_DETAILS_JSON);
 
         var bookDetails = bookService.getBookDetailsById(BOOK_ID, JWT_TOKEN);
 
@@ -73,7 +77,8 @@ class BookServiceShould {
         given(catalogClient.getBookDataByTitleAndAuthor(BOOK_TITLE, BOOK_AUTHOR, JWT_TOKEN)).willReturn(catalogMono);
         given(rentalClient.getBookRentalRecords(BOOK_ID, JWT_TOKEN)).willReturn(RENTAL_MONO);
         given(inventoryClient.getAvailableBookCopiesCount(BOOK_ID, JWT_TOKEN)).willReturn(AVAILABLE_BOOK_COUNT_MONO);
-        given(bookDetailsResponseCombiner.generateBookDetailsDto(catalogResponse, RENTAL_RESPONSE, AVAILABLE_BOOK_COUNT))
+        given(inventoryClient.getBookSubscription(BOOK_ID, JWT_TOKEN)).willReturn(BOOK_SUBSCRIPTION_MONO);
+        given(bookDetailsResponseCombiner.generateBookDetailsDto(catalogResponse, RENTAL_RESPONSE, AVAILABLE_BOOK_COUNT, BOOK_SUBSCRIPTION))
                 .willReturn(BOOK_DETAILS_JSON);
 
         var bookDetails = bookService.getBookDetailsByTitleAndAuthor(BOOK_TITLE, BOOK_AUTHOR, JWT_TOKEN);
