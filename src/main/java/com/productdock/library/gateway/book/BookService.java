@@ -21,7 +21,12 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
         var bookSubscriptionMono = inventoryClient.getBookSubscription(bookId, jwtToken);
 
         var bookDetailsDtoMono = Mono.zip(bookDtoMono, rentalRecordsDtoMono, availableBooksCountMono, bookSubscriptionMono).flatMap(tuple -> {
-            var book = bookDetailsResponseCombiner.generateBookDetailsDto(tuple.getT1(), tuple.getT2(), tuple.getT3(), tuple.getT4());
+            var bookDetailsDto = new BookDetailsDto();
+            bookDetailsDto.setBookDataDto(tuple.getT1());
+            bookDetailsDto.setRentalRecordsDto(tuple.getT2());
+            bookDetailsDto.setAvailableBookCount(tuple.getT3());
+            bookDetailsDto.setBookSubscription(tuple.getT4());
+            var book = bookDetailsResponseCombiner.generateBookDetailsDto(bookDetailsDto);
             return Mono.just(book);
         });
         return bookDetailsDtoMono.toFuture().get();
@@ -37,7 +42,12 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
         var bookSubscriptionMono = inventoryClient.getBookSubscription(bookId, jwtToken);
 
         var bookDetailsDtoMono = Mono.zip(rentalRecordsDtoMono, availableBooksCountMono, bookSubscriptionMono).flatMap(tuple -> {
-            var book = bookDetailsResponseCombiner.generateBookDetailsDto(bookDetails, tuple.getT1(), tuple.getT2(), tuple.getT3());
+            var bookDetailsDto = new BookDetailsDto();
+            bookDetailsDto.setBookDataDto(bookDetails);
+            bookDetailsDto.setRentalRecordsDto(tuple.getT1());
+            bookDetailsDto.setAvailableBookCount(tuple.getT2());
+            bookDetailsDto.setBookSubscription(tuple.getT3());
+            var book = bookDetailsResponseCombiner.generateBookDetailsDto(bookDetailsDto);
             return Mono.just(book);
         });
         return bookDetailsDtoMono.toFuture().get();

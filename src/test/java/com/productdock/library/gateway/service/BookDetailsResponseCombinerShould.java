@@ -1,5 +1,6 @@
 package com.productdock.library.gateway.service;
 
+import com.productdock.library.gateway.book.BookDetailsDto;
 import com.productdock.library.gateway.book.BookDetailsResponseCombiner;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +28,13 @@ class BookDetailsResponseCombinerShould {
         var availableBookCount = 1;
         var bookSubscription = false;
 
-        var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(anyDto, rentalRecordsDto, availableBookCount, bookSubscription);
+        var bookDetailsDto = new BookDetailsDto();
+        bookDetailsDto.setBookDataDto(anyDto);
+        bookDetailsDto.setRentalRecordsDto(rentalRecordsDto);
+        bookDetailsDto.setAvailableBookCount(availableBookCount);
+        bookDetailsDto.setBookSubscription(bookSubscription);
+
+        var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(bookDetailsDto);
 
         assertThat(bookDetails.get("property").asText()).isEqualTo("value");
         assertThat(bookDetails.get("records")).isNotNull();
@@ -46,7 +53,13 @@ class BookDetailsResponseCombinerShould {
         var availableBookCount = 0;
         var bookSubscription = false;
 
-        var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(anyDto, rentalRecordsDto, availableBookCount, bookSubscription);
+        var bookDetailsDto = new BookDetailsDto();
+        bookDetailsDto.setBookDataDto(anyDto);
+        bookDetailsDto.setRentalRecordsDto(rentalRecordsDto);
+        bookDetailsDto.setAvailableBookCount(availableBookCount);
+        bookDetailsDto.setBookSubscription(bookSubscription);
+
+        var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(bookDetailsDto);
 
         assertThat(bookDetails.get("records")).isNotNull();
         assertThat(bookDetails.get("records").size()).isEqualTo(1);
