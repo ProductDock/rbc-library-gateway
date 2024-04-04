@@ -76,7 +76,8 @@ class BookApiTest {
                 .jsonPath("$.reviews[0].recommendation[0]").isEqualTo("JUNIOR")
                 .jsonPath("$.reviews[0].recommendation").value(hasSize(1))
                 .jsonPath("$.reviews[0].comment").isEqualTo("Must read!")
-                .jsonPath("$.records").value(empty());
+                .jsonPath("$.records").value(empty())
+                .jsonPath("$.subscribed").isEqualTo(false);
     }
 
     @Test
@@ -102,7 +103,8 @@ class BookApiTest {
                 .jsonPath("$.reviews[0].recommendation[0]").isEqualTo("JUNIOR")
                 .jsonPath("$.reviews[0].recommendation").value(hasSize(1))
                 .jsonPath("$.reviews[0].comment").isEqualTo("Must read!")
-                .jsonPath("$.records").value(empty());
+                .jsonPath("$.records").value(empty())
+                .jsonPath("$.subscribed").isEqualTo(false);
     }
 
     private String generateToken() {
