@@ -2,6 +2,7 @@ package com.productdock.library.gateway.book;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jwt.JWTParser;
 import com.productdock.library.gateway.client.CatalogClient;
 import com.productdock.library.gateway.client.InventoryClient;
 import com.productdock.library.gateway.client.RentalClient;
@@ -13,12 +14,17 @@ import reactor.core.publisher.Mono;
 public record BookService(CatalogClient catalogClient, RentalClient rentalClient,
                           InventoryClient inventoryClient, BookDetailsResponseCombiner bookDetailsResponseCombiner) {
 
+    private static final String CLAIM_EMAIL = "email";
+
     @SneakyThrows
     public JsonNode getBookDetailsById(String bookId, String jwtToken) {
+        var jwt = JWTParser.parse(jwtToken);
+        var userId = jwt.getJWTClaimsSet().getClaim(CLAIM_EMAIL).toString();
+
         var bookDtoMono = catalogClient.getBookData(bookId, jwtToken);
         var rentalRecordsDtoMono = rentalClient.getBookRentalRecords(bookId, jwtToken);
         var availableBooksCountMono = inventoryClient.getAvailableBookCopiesCount(bookId, jwtToken);
-        var bookSubscriptionMono = inventoryClient.getBookSubscription(bookId, jwtToken);
+        var bookSubscriptionMono = inventoryClient.getBookSubscription(bookId, jwtToken, userId);
 
         var bookDetailsDtoMono = Mono.zip(bookDtoMono, rentalRecordsDtoMono, availableBooksCountMono, bookSubscriptionMono).flatMap(tuple -> {
             var bookDetailsDto = new BookDetailsDto();
@@ -34,12 +40,15 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
 
     @SneakyThrows
     public JsonNode getBookDetailsByTitleAndAuthor(String title, String author, String jwtToken) {
+        var jwt = JWTParser.parse(jwtToken);
+        var userId = jwt.getJWTClaimsSet().getClaim(CLAIM_EMAIL).toString();
+
         var bookDtoMono = catalogClient.getBookDataByTitleAndAuthor(title, author, jwtToken);
         var bookDetails = bookDtoMono.toFuture().get();
         String bookId = getIdFromBook(bookDetails);
         var rentalRecordsDtoMono = rentalClient.getBookRentalRecords(bookId, jwtToken);
         var availableBooksCountMono = inventoryClient.getAvailableBookCopiesCount(bookId, jwtToken);
-        var bookSubscriptionMono = inventoryClient.getBookSubscription(bookId, jwtToken);
+        var bookSubscriptionMono = inventoryClient.getBookSubscription(bookId, jwtToken, userId);
 
         var bookDetailsDtoMono = Mono.zip(rentalRecordsDtoMono, availableBooksCountMono, bookSubscriptionMono).flatMap(tuple -> {
             var bookDetailsDto = new BookDetailsDto();

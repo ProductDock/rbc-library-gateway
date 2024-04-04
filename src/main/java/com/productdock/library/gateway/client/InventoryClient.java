@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -30,16 +31,22 @@ public class InventoryClient {
                 .onErrorReturn(RuntimeException.class, 0);
     }
 
-    public Mono<Boolean> getBookSubscription(String bookId, String jwtToken) {
-        var subscriptionUrl = inventoryServiceUrl + "/api/inventory/subscriptions/" + bookId;
+    public Mono<Boolean> getBookSubscription(String bookId, String jwtToken, String userId) {
+        var subscriptionUrl = inventoryServiceUrl + "/api/inventory/books/" + bookId + "/subscriptions";
+        var uri = new DefaultUriBuilderFactory(subscriptionUrl)
+                .builder()
+                .queryParam("userId", userId)
+                .build();
+
 
         return webClient
                 .get()
-                .uri(subscriptionUrl)
+                .uri(uri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                 .retrieve()
-                .bodyToMono(Boolean.class)
-                .onErrorReturn(RuntimeException.class, false);
+                .toBodilessEntity()
+                .map(responseEntity -> responseEntity.getStatusCode().is2xxSuccessful())
+                .onErrorReturn(false);
     }
 
 }
