@@ -9,6 +9,10 @@ import com.productdock.library.gateway.client.RentalClient;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple4;
+
+import java.text.ParseException;
+import java.util.List;
 
 @Service
 public record BookService(CatalogClient catalogClient, RentalClient rentalClient,
@@ -18,30 +22,21 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
 
     @SneakyThrows
     public JsonNode getBookDetailsById(String bookId, String jwtToken) {
-        var jwt = JWTParser.parse(jwtToken);
-        var userId = jwt.getJWTClaimsSet().getClaim(CLAIM_EMAIL).toString();
+        var userId = getClaimEmail(jwtToken);
 
         var bookDtoMono = catalogClient.getBookData(bookId, jwtToken);
         var rentalRecordsDtoMono = rentalClient.getBookRentalRecords(bookId, jwtToken);
         var availableBooksCountMono = inventoryClient.getAvailableBookCopiesCount(bookId, jwtToken);
         var bookSubscriptionMono = inventoryClient.getBookSubscription(bookId, jwtToken, userId);
 
-        var bookDetailsDtoMono = Mono.zip(bookDtoMono, rentalRecordsDtoMono, availableBooksCountMono, bookSubscriptionMono).flatMap(tuple -> {
-            var bookDetailsDto = new BookDetailsDto();
-            bookDetailsDto.setBookDataDto(tuple.getT1());
-            bookDetailsDto.setRentalRecordsDto(tuple.getT2());
-            bookDetailsDto.setAvailableBookCount(tuple.getT3());
-            bookDetailsDto.setBookSubscription(tuple.getT4());
-            var book = bookDetailsResponseCombiner.generateBookDetailsDto(bookDetailsDto);
-            return Mono.just(book);
-        });
+        var bookDetailsDtoMono = generateBookDetailsDtoMono(Mono.zip(bookDtoMono, rentalRecordsDtoMono, availableBooksCountMono, bookSubscriptionMono));
+
         return bookDetailsDtoMono.toFuture().get();
     }
 
     @SneakyThrows
     public JsonNode getBookDetailsByTitleAndAuthor(String title, String author, String jwtToken) {
-        var jwt = JWTParser.parse(jwtToken);
-        var userId = jwt.getJWTClaimsSet().getClaim(CLAIM_EMAIL).toString();
+        var userId = getClaimEmail(jwtToken);
 
         var bookDtoMono = catalogClient.getBookDataByTitleAndAuthor(title, author, jwtToken);
         var bookDetails = bookDtoMono.toFuture().get();
@@ -50,22 +45,28 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
         var availableBooksCountMono = inventoryClient.getAvailableBookCopiesCount(bookId, jwtToken);
         var bookSubscriptionMono = inventoryClient.getBookSubscription(bookId, jwtToken, userId);
 
-        var bookDetailsDtoMono = Mono.zip(rentalRecordsDtoMono, availableBooksCountMono, bookSubscriptionMono).flatMap(tuple -> {
-            var bookDetailsDto = new BookDetailsDto();
-            bookDetailsDto.setBookDataDto(bookDetails);
-            bookDetailsDto.setRentalRecordsDto(tuple.getT1());
-            bookDetailsDto.setAvailableBookCount(tuple.getT2());
-            bookDetailsDto.setBookSubscription(tuple.getT3());
+        var bookDetailsDtoMono = generateBookDetailsDtoMono(Mono.zip(bookDtoMono, rentalRecordsDtoMono, availableBooksCountMono, bookSubscriptionMono));
+
+        return bookDetailsDtoMono.toFuture().get();
+    }
+
+    private Mono<JsonNode> generateBookDetailsDtoMono(Mono<Tuple4<Object, List<Object>, Integer, Boolean>> mono) {
+        return mono.flatMap(tuple -> {
+            var bookDetailsDto = new BookDetailsDto(tuple.getT1(), tuple.getT2(), tuple.getT3(), tuple.getT4());
             var book = bookDetailsResponseCombiner.generateBookDetailsDto(bookDetailsDto);
             return Mono.just(book);
         });
-        return bookDetailsDtoMono.toFuture().get();
     }
 
     private String getIdFromBook(Object bookDetails) {
         var bookNode = jsonOf(bookDetails);
         var bookIdNode = bookNode.get("id");
         return bookIdNode.asText();
+    }
+
+    private String getClaimEmail(String jwtToken) throws ParseException {
+        var jwt = JWTParser.parse(jwtToken);
+        return jwt.getJWTClaimsSet().getClaim(CLAIM_EMAIL).toString();
     }
 
     private JsonNode jsonOf(Object book) {

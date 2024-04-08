@@ -17,10 +17,10 @@ public class BookDetailsResponseCombiner {
     private static final String JSON_FIELD_SUBSCRIPTION = "subscribed";
 
     public JsonNode generateBookDetailsDto(BookDetailsDto bookDetailsDto) {
-        List<Object> records = combineRentalRecordsWithAvailable(bookDetailsDto.getRentalRecordsDto(), bookDetailsDto.getAvailableBookCount());
-        var json = jsonOf(bookDetailsDto.getBookDataDto());
+        List<Object> records = combineRentalRecordsWithAvailable(bookDetailsDto.rentalRecords(), bookDetailsDto.availableBookCount());
+        var json = jsonOf(bookDetailsDto.bookData());
         extendJsonWithRecords((ObjectNode) json, jsonOf(records));
-        extendJsonWithSubscription((ObjectNode) json, jsonOf(bookDetailsDto.getBookSubscription()));
+        extendJsonWithSubscription((ObjectNode) json, jsonOf(bookDetailsDto.bookSubscription()));
 
         return json;
     }

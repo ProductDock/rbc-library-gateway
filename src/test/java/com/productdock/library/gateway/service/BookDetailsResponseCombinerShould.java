@@ -27,12 +27,7 @@ class BookDetailsResponseCombinerShould {
         List<Object> rentalRecordsDto = List.of(anyRecord);
         var availableBookCount = 1;
         var bookSubscription = false;
-
-        var bookDetailsDto = new BookDetailsDto();
-        bookDetailsDto.setBookDataDto(anyDto);
-        bookDetailsDto.setRentalRecordsDto(rentalRecordsDto);
-        bookDetailsDto.setAvailableBookCount(availableBookCount);
-        bookDetailsDto.setBookSubscription(bookSubscription);
+        var bookDetailsDto = new BookDetailsDto(anyDto, rentalRecordsDto, availableBookCount, bookSubscription);
 
         var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(bookDetailsDto);
 
@@ -52,13 +47,8 @@ class BookDetailsResponseCombinerShould {
         List<Object> rentalRecordsDto = List.of(anyRecord);
         var availableBookCount = 0;
         var bookSubscription = false;
-
-        var bookDetailsDto = new BookDetailsDto();
-        bookDetailsDto.setBookDataDto(anyDto);
-        bookDetailsDto.setRentalRecordsDto(rentalRecordsDto);
-        bookDetailsDto.setAvailableBookCount(availableBookCount);
-        bookDetailsDto.setBookSubscription(bookSubscription);
-
+        var bookDetailsDto = new BookDetailsDto(anyDto, rentalRecordsDto, availableBookCount, bookSubscription);
+        
         var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(bookDetailsDto);
 
         assertThat(bookDetails.get("records")).isNotNull();
