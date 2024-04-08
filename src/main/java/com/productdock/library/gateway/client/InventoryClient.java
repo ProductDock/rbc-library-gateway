@@ -20,7 +20,7 @@ public class InventoryClient {
     }
 
     public Mono<Integer> getAvailableBookCopiesCount(String bookId, String jwtToken) {
-        var inventoryBookUrl = inventoryServiceUrl + "/api/inventory/book/" + bookId;
+        var inventoryBookUrl = inventoryServiceUrl + "/api/inventory/books/" + bookId;
 
         return webClient
                 .get()
