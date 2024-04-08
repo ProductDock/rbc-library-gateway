@@ -61,7 +61,7 @@ class BookServiceShould {
         given(catalogClient.getBookData(BOOK_ID, JWT_TOKEN)).willReturn(CATALOG_MONO);
         given(rentalClient.getBookRentalRecords(BOOK_ID, JWT_TOKEN)).willReturn(RENTAL_MONO);
         given(inventoryClient.getAvailableBookCopiesCount(BOOK_ID, JWT_TOKEN)).willReturn(AVAILABLE_BOOK_COUNT_MONO);
-        given(inventoryClient.getBookSubscription(BOOK_ID, JWT_TOKEN, USER_ID)).willReturn(BOOK_SUBSCRIPTION_MONO);
+        given(inventoryClient.isUserSubscribedToBook(BOOK_ID, JWT_TOKEN, USER_ID)).willReturn(BOOK_SUBSCRIPTION_MONO);
         given(bookDetailsResponseCombiner.generateBookDetailsDto(any())).willReturn(BOOK_DETAILS_JSON);
 
         var bookDetails = bookService.getBookDetailsById(BOOK_ID, JWT_TOKEN);
@@ -78,7 +78,7 @@ class BookServiceShould {
         given(catalogClient.getBookDataByTitleAndAuthor(BOOK_TITLE, BOOK_AUTHOR, JWT_TOKEN)).willReturn(catalogMono);
         given(rentalClient.getBookRentalRecords(BOOK_ID, JWT_TOKEN)).willReturn(RENTAL_MONO);
         given(inventoryClient.getAvailableBookCopiesCount(BOOK_ID, JWT_TOKEN)).willReturn(AVAILABLE_BOOK_COUNT_MONO);
-        given(inventoryClient.getBookSubscription(BOOK_ID, JWT_TOKEN, USER_ID)).willReturn(BOOK_SUBSCRIPTION_MONO);
+        given(inventoryClient.isUserSubscribedToBook(BOOK_ID, JWT_TOKEN, USER_ID)).willReturn(BOOK_SUBSCRIPTION_MONO);
         given(bookDetailsResponseCombiner.generateBookDetailsDto(any()))
                 .willReturn(BOOK_DETAILS_JSON);
 

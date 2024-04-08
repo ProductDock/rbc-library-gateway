@@ -31,7 +31,7 @@ public class InventoryClient {
                 .onErrorReturn(RuntimeException.class, 0);
     }
 
-    public Mono<Boolean> getBookSubscription(String bookId, String jwtToken, String userId) {
+    public Mono<Boolean> isUserSubscribedToBook(String bookId, String jwtToken, String userId) {
         var subscriptionUrl = inventoryServiceUrl + "/api/inventory/books/" + bookId + "/subscriptions";
         var uri = new DefaultUriBuilderFactory(subscriptionUrl)
                 .builder()

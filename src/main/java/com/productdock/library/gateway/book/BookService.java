@@ -27,7 +27,7 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
         var bookDtoMono = catalogClient.getBookData(bookId, jwtToken);
         var rentalRecordsDtoMono = rentalClient.getBookRentalRecords(bookId, jwtToken);
         var availableBooksCountMono = inventoryClient.getAvailableBookCopiesCount(bookId, jwtToken);
-        var bookSubscriptionMono = inventoryClient.getBookSubscription(bookId, jwtToken, userId);
+        var bookSubscriptionMono = inventoryClient.isUserSubscribedToBook(bookId, jwtToken, userId);
 
         var bookDetailsDtoMono = generateBookDetailsDtoMono(Mono.zip(bookDtoMono, rentalRecordsDtoMono, availableBooksCountMono, bookSubscriptionMono));
 
@@ -43,9 +43,9 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
         String bookId = getIdFromBook(bookDetails);
         var rentalRecordsDtoMono = rentalClient.getBookRentalRecords(bookId, jwtToken);
         var availableBooksCountMono = inventoryClient.getAvailableBookCopiesCount(bookId, jwtToken);
-        var bookSubscriptionMono = inventoryClient.getBookSubscription(bookId, jwtToken, userId);
+        var bookSubscriptionMono = inventoryClient.isUserSubscribedToBook(bookId, jwtToken, userId);
 
-        var bookDetailsDtoMono = generateBookDetailsDtoMono(Mono.zip(bookDtoMono, rentalRecordsDtoMono, availableBooksCountMono, bookSubscriptionMono));
+        var bookDetailsDtoMono = generateBookDetailsDtoMono(Mono.zip(Mono.just(bookDetails), rentalRecordsDtoMono, availableBooksCountMono, bookSubscriptionMono));
 
         return bookDetailsDtoMono.toFuture().get();
     }
