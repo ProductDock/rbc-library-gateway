@@ -22,7 +22,7 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
 
     @SneakyThrows
     public JsonNode getBookDetailsById(String bookId, String jwtToken) {
-        var userId = getClaimEmail(jwtToken);
+        var userId = extractUserId(jwtToken);
 
         var bookDtoMono = catalogClient.getBookData(bookId, jwtToken);
         var rentalRecordsDtoMono = rentalClient.getBookRentalRecords(bookId, jwtToken);
@@ -36,7 +36,7 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
 
     @SneakyThrows
     public JsonNode getBookDetailsByTitleAndAuthor(String title, String author, String jwtToken) {
-        var userId = getClaimEmail(jwtToken);
+        var userId = extractUserId(jwtToken);
 
         var bookDtoMono = catalogClient.getBookDataByTitleAndAuthor(title, author, jwtToken);
         var bookDetails = bookDtoMono.toFuture().get();
@@ -64,7 +64,7 @@ public record BookService(CatalogClient catalogClient, RentalClient rentalClient
         return bookIdNode.asText();
     }
 
-    private String getClaimEmail(String jwtToken) throws ParseException {
+    private String extractUserId(String jwtToken) throws ParseException {
         var jwt = JWTParser.parse(jwtToken);
         return jwt.getJWTClaimsSet().getClaim(CLAIM_EMAIL).toString();
     }
