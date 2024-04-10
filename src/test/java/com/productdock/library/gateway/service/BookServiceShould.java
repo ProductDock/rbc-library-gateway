@@ -29,7 +29,7 @@ class BookServiceShould {
     private static final String BOOK_ID = "1";
     private static final String BOOK_TITLE = "::title::";
     private static final String BOOK_AUTHOR = "::author::";
-    private static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtYWlsIn0.9_82fPfiHdHoOkyx8WQY8FsgPivtguil3QL5a3bDE7g";
+    private static final String DUMMY_JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtYWlsIn0.9_82fPfiHdHoOkyx8WQY8FsgPivtguil3QL5a3bDE7g";
     private static final String USER_ID = "email";
     private static final int AVAILABLE_BOOK_COUNT = 1;
     private static final boolean BOOK_SUBSCRIPTION = false;
@@ -58,13 +58,13 @@ class BookServiceShould {
 
     @Test
     void generateBookDetailsDtoByBookId() {
-        given(catalogClient.getBookData(BOOK_ID, JWT_TOKEN)).willReturn(CATALOG_MONO);
-        given(rentalClient.getBookRentalRecords(BOOK_ID, JWT_TOKEN)).willReturn(RENTAL_MONO);
-        given(inventoryClient.getAvailableBookCopiesCount(BOOK_ID, JWT_TOKEN)).willReturn(AVAILABLE_BOOK_COUNT_MONO);
-        given(inventoryClient.isUserSubscribedToBook(BOOK_ID, JWT_TOKEN, USER_ID)).willReturn(BOOK_SUBSCRIPTION_MONO);
+        given(catalogClient.getBookData(BOOK_ID, DUMMY_JWT_TOKEN)).willReturn(CATALOG_MONO);
+        given(rentalClient.getBookRentalRecords(BOOK_ID, DUMMY_JWT_TOKEN)).willReturn(RENTAL_MONO);
+        given(inventoryClient.getAvailableBookCopiesCount(BOOK_ID, DUMMY_JWT_TOKEN)).willReturn(AVAILABLE_BOOK_COUNT_MONO);
+        given(inventoryClient.isUserSubscribedToBook(BOOK_ID, DUMMY_JWT_TOKEN, USER_ID)).willReturn(BOOK_SUBSCRIPTION_MONO);
         given(bookDetailsResponseCombiner.generateBookDetailsDto(any())).willReturn(BOOK_DETAILS_JSON);
 
-        var bookDetails = bookService.getBookDetailsById(BOOK_ID, JWT_TOKEN);
+        var bookDetails = bookService.getBookDetailsById(BOOK_ID, DUMMY_JWT_TOKEN);
 
         assertThat(bookDetails).isEqualTo(BOOK_DETAILS_JSON);
     }
@@ -75,14 +75,14 @@ class BookServiceShould {
         Object catalogResponse = new ObjectMapper()
                 .readValue("{\"id\": \"1\", \"title\": \"::title::\", \"author\":\"::author::\"}", Object.class);
         var catalogMono = Mono.just(catalogResponse);
-        given(catalogClient.getBookDataByTitleAndAuthor(BOOK_TITLE, BOOK_AUTHOR, JWT_TOKEN)).willReturn(catalogMono);
-        given(rentalClient.getBookRentalRecords(BOOK_ID, JWT_TOKEN)).willReturn(RENTAL_MONO);
-        given(inventoryClient.getAvailableBookCopiesCount(BOOK_ID, JWT_TOKEN)).willReturn(AVAILABLE_BOOK_COUNT_MONO);
-        given(inventoryClient.isUserSubscribedToBook(BOOK_ID, JWT_TOKEN, USER_ID)).willReturn(BOOK_SUBSCRIPTION_MONO);
+        given(catalogClient.getBookDataByTitleAndAuthor(BOOK_TITLE, BOOK_AUTHOR, DUMMY_JWT_TOKEN)).willReturn(catalogMono);
+        given(rentalClient.getBookRentalRecords(BOOK_ID, DUMMY_JWT_TOKEN)).willReturn(RENTAL_MONO);
+        given(inventoryClient.getAvailableBookCopiesCount(BOOK_ID, DUMMY_JWT_TOKEN)).willReturn(AVAILABLE_BOOK_COUNT_MONO);
+        given(inventoryClient.isUserSubscribedToBook(BOOK_ID, DUMMY_JWT_TOKEN, USER_ID)).willReturn(BOOK_SUBSCRIPTION_MONO);
         given(bookDetailsResponseCombiner.generateBookDetailsDto(any()))
                 .willReturn(BOOK_DETAILS_JSON);
 
-        var bookDetails = bookService.getBookDetailsByTitleAndAuthor(BOOK_TITLE, BOOK_AUTHOR, JWT_TOKEN);
+        var bookDetails = bookService.getBookDetailsByTitleAndAuthor(BOOK_TITLE, BOOK_AUTHOR, DUMMY_JWT_TOKEN);
 
         assertThat(bookDetails).isEqualTo(BOOK_DETAILS_JSON);
     }
