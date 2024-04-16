@@ -1,5 +1,6 @@
 package com.productdock.library.gateway.service;
 
+import com.productdock.library.gateway.book.BookDetailsDto;
 import com.productdock.library.gateway.book.BookDetailsResponseCombiner;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,8 +26,10 @@ class BookDetailsResponseCombinerShould {
         anyRecord.put("recordProperty", "recordValue");
         List<Object> rentalRecordsDto = List.of(anyRecord);
         var availableBookCount = 1;
+        var bookSubscription = false;
+        var bookDetailsDto = new BookDetailsDto(anyDto, rentalRecordsDto, availableBookCount, bookSubscription);
 
-        var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(anyDto, rentalRecordsDto, availableBookCount);
+        var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(bookDetailsDto);
 
         assertThat(bookDetails.get("property").asText()).isEqualTo("value");
         assertThat(bookDetails.get("records")).isNotNull();
@@ -43,8 +46,10 @@ class BookDetailsResponseCombinerShould {
         anyRecord.put("recordProperty", "recordValue");
         List<Object> rentalRecordsDto = List.of(anyRecord);
         var availableBookCount = 0;
-
-        var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(anyDto, rentalRecordsDto, availableBookCount);
+        var bookSubscription = false;
+        var bookDetailsDto = new BookDetailsDto(anyDto, rentalRecordsDto, availableBookCount, bookSubscription);
+        
+        var bookDetails = bookDetailsResponseCombiner.generateBookDetailsDto(bookDetailsDto);
 
         assertThat(bookDetails.get("records")).isNotNull();
         assertThat(bookDetails.get("records").size()).isEqualTo(1);

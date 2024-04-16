@@ -14,11 +14,14 @@ import static java.util.stream.Stream.concat;
 public class BookDetailsResponseCombiner {
 
     private static final String JSON_FIELD_RECORDS = "records";
+    private static final String JSON_FIELD_SUBSCRIPTION = "subscribed";
 
-    public JsonNode generateBookDetailsDto(Object book, List<Object> rentalRecords, int availableBooksCount) {
-        List<Object> records = combineRentalRecordsWithAvailable(rentalRecords, availableBooksCount);
-        var json = jsonOf(book);
+    public JsonNode generateBookDetailsDto(BookDetailsDto bookDetailsDto) {
+        List<Object> records = combineRentalRecordsWithAvailable(bookDetailsDto.rentalRecords(), bookDetailsDto.availableBookCount());
+        var json = jsonOf(bookDetailsDto.bookData());
         extendJsonWithRecords((ObjectNode) json, jsonOf(records));
+        extendJsonWithSubscription((ObjectNode) json, jsonOf(bookDetailsDto.bookSubscription()));
+
         return json;
     }
 
@@ -37,5 +40,9 @@ public class BookDetailsResponseCombiner {
 
     private void extendJsonWithRecords(ObjectNode json, JsonNode records) {
         json.putIfAbsent(JSON_FIELD_RECORDS, records);
+    }
+
+    private void extendJsonWithSubscription(ObjectNode json, JsonNode bookSubscription) {
+        json.putIfAbsent(JSON_FIELD_SUBSCRIPTION, bookSubscription);
     }
 }

@@ -42,6 +42,10 @@ spring:
           uri: ${USER_PROFILES_SERVICE_URL}
           predicates:
             - Path=/api/user-profiles/**
+        - id: inventory-route
+          uri: ${INVENTORY_SERVICE_URL}
+          predicates:
+            - Path=/api/inventory/**
 
   data:
     mongodb:
