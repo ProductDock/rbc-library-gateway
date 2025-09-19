@@ -14,6 +14,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.io.IOException;
+import java.util.Base64;
+import java.util.Date;
 
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
@@ -54,7 +56,8 @@ class BookApiTest {
     @Test
     @WithMockUser
     void givenBookId_thenGetBookDetails() {
-        mockUserProfilesBackEnd.enqueue(new MockResponse().setBody("id-token"));
+        var token = generateToken();
+        mockUserProfilesBackEnd.enqueue(new MockResponse().setBody(token));
         mockCatalogBackEnd.enqueue(new MockResponse()
                 .setBody("{\"id\": \"1\", \"title\": \"Title\", \"author\": \"John Doe\", \"cover\": \"Cover\", " +
                         "\"reviews\":[{\"userFullName\":\"John Doe\",\"rating\":5,\"recommendation\":[\"JUNIOR\"],\"comment\":\"Must read!\"}]}")
@@ -73,13 +76,15 @@ class BookApiTest {
                 .jsonPath("$.reviews[0].recommendation[0]").isEqualTo("JUNIOR")
                 .jsonPath("$.reviews[0].recommendation").value(hasSize(1))
                 .jsonPath("$.reviews[0].comment").isEqualTo("Must read!")
-                .jsonPath("$.records").value(empty());
+                .jsonPath("$.records").value(empty())
+                .jsonPath("$.subscribed").isEqualTo(false);
     }
 
     @Test
     @WithMockUser
     void givenTitleAndAuthor_thenGetBookDetails() {
-        mockUserProfilesBackEnd.enqueue(new MockResponse().setBody("id-token"));
+        var token = generateToken();
+        mockUserProfilesBackEnd.enqueue(new MockResponse().setBody(token));
         mockCatalogBackEnd.enqueue(new MockResponse()
                 .setBody("{\"id\": \"1\", \"title\": \"Title\", \"author\": \"John Doe\", \"cover\": \"Cover\", " +
                         "\"reviews\":[{\"userFullName\":\"John Doe\",\"rating\":5,\"recommendation\":[\"JUNIOR\"],\"comment\":\"Must read!\"}]}")
@@ -98,6 +103,16 @@ class BookApiTest {
                 .jsonPath("$.reviews[0].recommendation[0]").isEqualTo("JUNIOR")
                 .jsonPath("$.reviews[0].recommendation").value(hasSize(1))
                 .jsonPath("$.reviews[0].comment").isEqualTo("Must read!")
-                .jsonPath("$.records").value(empty());
+                .jsonPath("$.records").value(empty())
+                .jsonPath("$.subscribed").isEqualTo(false);
+    }
+
+    private String generateToken() {
+        var email = "user@email.com";
+        var header = "{\"alg\":\"HS256\",\"typ\":\"JWT\"}";
+        var payload = "{\"sub\":\"subject\",\"email\":\"" + email + "\",\"iat\":" + new Date().getTime() + "}";
+        var headerBase64 = Base64.getEncoder().encodeToString(header.getBytes());
+        var payloadBase64 = Base64.getEncoder().encodeToString(payload.getBytes());
+        return headerBase64 + "." + payloadBase64 + ".signature";
     }
 }
