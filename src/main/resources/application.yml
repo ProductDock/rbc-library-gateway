@@ -76,6 +76,9 @@ security:
   front-to-gateway:
     redirect-uri: ${FRONTEND_URL}
 
+server:
+  forward-headers-strategy: native
+
 management:
   server:
     port: 8087
@@ -86,3 +89,8 @@ management:
     web:
       exposure:
         include: '*'
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web: DEBUG
+    com.productdock.library.gateway: DEBUG

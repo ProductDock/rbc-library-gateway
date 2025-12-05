@@ -1,5 +1,6 @@
 package com.productdock.library.gateway.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -9,6 +10,7 @@ import org.springframework.web.server.ServerWebExchange;
 
 
 @Component
+@Slf4j
 public class JwtGatewayFilterFactory extends
         AbstractGatewayFilterFactory<Object> {
 
@@ -26,13 +28,16 @@ public class JwtGatewayFilterFactory extends
     @Override
     public GatewayFilter apply(Object config) {
         return (exchange, chain) -> {
+            log.info("Incoming request: {} {}", exchange.getRequest().getMethod(), exchange.getRequest().getURI());
             var serverWebExchangeMono = exchange.getPrincipal()
                     .filter(OAuth2AuthenticationToken.class::isInstance)
                     .cast(OAuth2AuthenticationToken.class)
                     .flatMap(openId -> userProfileTokenExchanger.exchangeForUserProfileToken(getOpenIdTokenValue(openId)))
                     .map(userProfileJwt -> mutateRequestWithUserProfileToken(exchange, userProfileJwt))
                     .defaultIfEmpty(exchange);
-            return serverWebExchangeMono.flatMap(chain::filter);
+            return serverWebExchangeMono.flatMap(chain::filter)
+                    .doOnSuccess(unused -> log.info("Response sent for {} {}",
+                            exchange.getRequest().getMethod(), exchange.getRequest().getURI()));
         };
     }
 
